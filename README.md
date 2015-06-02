@@ -1,25 +1,7 @@
-KnifeSpork
-===========
-KnifeSpork is a workflow plugin for `Chef::Knife` which helps multiple developers work on the same Chef Server and repository without treading on each other's toes. This plugin was designed around the workflow we have here at Etsy, where several people are working on the Chef repository and Chef Server simultaneously. It contains several functions, documented below:
+KnifeSpork X
+============
+KnifeSpork X is a modified version of the original [knife-spork project](https://github.com/jonlives/knife-spork) by [@jonlives](https://github.com/jonlives) at Etsy. This fork adds the workflows I have used at AppLovin.
 
-[![Build Status](https://travis-ci.org/jonlives/knife-spork.svg)](https://travis-ci.org/jonlives/knife-spork)
-[![Gem Version](https://badge.fury.io/rb/knife-spork.png)](http://badge.fury.io/rb/knife-spork)
-
-Installation
-------------
-
-### Gem Install
-`knife-spork` is available on rubygems. Add the following to your `Gemfile`:
-
-```ruby
-gem 'knife-spork'
-```
-
-or install the gem manually:
-
-```bash
-gem install knife-spork
-```
 
 **Please note**: As of version 1.3.0, knife-spork depends on version 11.0.0 or greater of the chef gem. If you're still using Chef 10, please continue to use knife-spork 1.2.x
 Spork Configuration
