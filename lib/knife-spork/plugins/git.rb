@@ -187,6 +187,22 @@ module KnifeSpork
           git_push(branch)
         end
       end
+
+      def before_environment_attribute_set
+        if config.auto_push
+          git_pull(environment_path)
+        end
+      end
+
+      def after_environment_attribute_set
+        if config.auto_push
+          git_add(environment_path, ".")
+
+          git_commit(environment_path, "Set #{@options[:args][:attribute]} to #{@options[:args][:value]} in #{@options[:args][:environments].join(",")}")
+
+          git_push(branch)
+        end
+      end
     
       def save_node(node)
         json = JSON.pretty_generate(Chef::Node.load(node))
