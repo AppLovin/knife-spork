@@ -152,7 +152,7 @@ module KnifeSpork
       end
 
       def nickname
-        config.nickname || 'KnifeSpork'
+        config.nickname || 'KnifeSpork X'
       end
 
       def notify
