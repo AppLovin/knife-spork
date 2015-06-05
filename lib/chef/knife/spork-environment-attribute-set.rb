@@ -25,6 +25,13 @@ module KnifeSpork
         ui.error("Environment group #{group} not found.")
       end
 
+      run_plugins(:before_environment_attribute_set)
+      
+      @args = { 
+        :environments => spork_config.environment_groups[group],
+        :attribute => @name_args[1], 
+        :value => @name_args[2] } 
+
       spork_config.environment_groups[group].each do |env|
         environment = load_environment_from_file(env)
         override_attribute(@name_args[1], @name_args[2], environment)
@@ -34,6 +41,8 @@ module KnifeSpork
 
         environment.save
       end
+
+      run_plugins(:after_environment_attribute_set)
     end
 
     private 
