@@ -10,6 +10,10 @@ module KnifeSpork
     include KnifeSpork::Runner
     include Utils
 
+    option :create_if_missing,
+           :long => '--create_if_missing',
+           :description => 'Create attribute if missing'
+
     def run 
       self.config = Chef::Config.merge!(config)
 
@@ -34,7 +38,14 @@ module KnifeSpork
 
       spork_config.environment_groups[group].each do |env|
         environment = load_environment_from_file(env)
-        override_attribute(@name_args[1], @name_args[2], environment)
+
+        create_if_missing = if config[:create_if_missing].nil?
+                              false
+                            else
+                              true
+                            end
+
+        override_attribute(@name_args[1], @name_args[2], environment, create_if_missing = create_if_missing)
 
         new_environment_json = pretty_print_json(environment.to_hash)
         save_environment_changes(env, new_environment_json)
@@ -46,9 +57,9 @@ module KnifeSpork
     end
 
     private 
-    def override_attribute(attribute, value, environment)
+    def override_attribute(attribute, value, environment, create_if_missing = false)
       environment.override_attributes = Utils.hash_set_recursive(attribute, value,
-        environment.override_attributes)
+        environment.override_attributes, create_if_missing)
     end
   end
 end
