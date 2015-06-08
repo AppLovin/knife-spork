@@ -198,7 +198,8 @@ module KnifeSpork
         if config.auto_push
           git_add(environment_path, ".")
 
-          git_commit(environment_path, "Set #{@options[:args][:attribute]} to #{@options[:args][:value]} in #{@options[:args][:environments].join(",")}")
+          attribute = @options[:args][:attribute].gsub(/([a-zA-Z0-9]+)#/, "['\\1']").gsub(/(?<=\])([\w]+(\.[\w]+)*)/, "['\\1']" )
+          git_commit(environment_path, "Set environment#{attribute} to #{@options[:args][:value]} in #{@options[:args][:environments].join(",")}")
 
           git_push(branch)
         end
