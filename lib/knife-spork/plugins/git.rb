@@ -1,9 +1,12 @@
 require 'knife-spork/plugins/plugin'
+require 'knife-spork/plugins/utils/hipchat'
 
 module KnifeSpork
   module Plugins
     class Git < Plugin
       name :git
+
+      include KnifeSpork::Plugins::Utils
 
       def perform; end
 
@@ -198,7 +201,7 @@ module KnifeSpork
         if config.auto_push
           git_add(environment_path, ".")
 
-          attribute = @options[:args][:attribute].gsub(/([a-zA-Z0-9]+)#/, "['\\1']").gsub(/(?<=\])([\w]+(\.[\w]+)*)/, "['\\1']" )
+          attribute = HipchatUtils.prettify_attribute(@options[:args][:attribute])
           git_commit(environment_path, "Set environment#{attribute} to #{@options[:args][:value]} in #{@options[:args][:environments].join(",")}")
 
           git_push(branch)
