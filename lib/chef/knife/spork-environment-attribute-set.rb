@@ -39,12 +39,6 @@ module KnifeSpork
       spork_config.environment_groups[group].each do |env|
         environment = load_environment_from_file(env)
 
-        create_if_missing = if config[:create_if_missing].nil?
-                              false
-                            else
-                              true
-                            end
-
         ui.msg "Modifying #{env}"
         override_attribute(@name_args[1], @name_args[2], environment, create_if_missing = create_if_missing)
 
@@ -57,8 +51,16 @@ module KnifeSpork
 
       run_plugins(:after_environment_attribute_set)
     end
+  
+    private
+    def create_if_missing
+      if config[:create_if_missing].nil?
+        false
+      else
+        true
+      end
+    end
 
-    private 
     def override_attribute(attribute, value, environment, create_if_missing = false)
       environment.override_attributes = Utils.hash_set_recursive(attribute, value,
         environment.override_attributes, create_if_missing)
