@@ -14,6 +14,10 @@ module KnifeSpork
            :long => '--create_if_missing',
            :description => 'Create attribute if missing'
 
+    option :force_string,
+           :long => '--force_string',
+           :description => 'Force value to a string'
+
     def run 
       self.config = Chef::Config.merge!(config)
 
@@ -40,7 +44,7 @@ module KnifeSpork
         environment = load_environment_from_file(env)
 
         ui.msg "Modifying #{env}"
-        override_attribute(@name_args[1], @name_args[2], environment, create_if_missing = create_if_missing)
+        override_attribute(@name_args[1], value, environment, create_if_missing = create_if_missing)
 
         new_environment_json = pretty_print_json(environment.to_hash)
         save_environment_changes(env, new_environment_json)
@@ -58,6 +62,21 @@ module KnifeSpork
         false
       else
         true
+      end
+    end
+
+    def value
+      value = @name_args[2]
+      if config.has_key? :force_string
+        value
+      elsif value == "true"
+        true
+      elsif value =="false"
+        false
+      elsif value.is_a? Numeric
+        value.to_i 
+      else
+        value
       end
     end
 
