@@ -45,12 +45,14 @@ module KnifeSpork
                               true
                             end
 
+        ui.msg "Modifying #{env}"
         override_attribute(@name_args[1], @name_args[2], environment, create_if_missing = create_if_missing)
 
         new_environment_json = pretty_print_json(environment.to_hash)
         save_environment_changes(env, new_environment_json)
 
         environment.save
+        ui.msg "Done modifying #{env} at #{Time.now}"
       end
 
       run_plugins(:after_environment_attribute_set)
