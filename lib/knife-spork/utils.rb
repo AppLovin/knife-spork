@@ -11,9 +11,9 @@ module KnifeSpork
         end
       else 
         head, *tail = attr.split(OBJECT_DELIMITER)
-        if ! hash[head].nil? && hash[head].class != String
+        if ! hash[head].nil? && hash[head].class == Hash
           hash[head] = hash_set_recursive(tail.join(OBJECT_DELIMITER), to, hash[head], create_if_missing = create_if_missing, array = array) 
-        elsif hash[head].class == String
+        elsif ! hash[head].class == Hash
           hash[head] = hash_set_recursive(tail.join(OBJECT_DELIMITER), to, {}, create_if_missing = create_if_missing) 
         elsif create_if_missing
           hash[head] = hash_set_recursive(tail.join(OBJECT_DELIMITER), to, {}, create_if_missing = true, array = array) 
