@@ -7,7 +7,11 @@ module KnifeSpork
         "object1" => {
           "object2" => {
           "attribute" => 1
-          }
+          },
+          "my_list" => [
+            "hello", 
+            "world"
+          ]
         },
         "object" => 2,
         "object4" => "some_string value"
@@ -46,6 +50,18 @@ module KnifeSpork
       it "changes value of first level attribute that is # delimited" do 
         environment = Utils.hash_set_recursive("object1#attribute.something", 2, environment)
         expect(environment["object1"]["attribute.something"]).to eq(2)
+      end
+
+      it "creates a list" do 
+        some_list = "the quick brown fox".split(" ")
+        environment = Utils.hash_set_recursive("object1#some.list", some_list, environment, create_if_missing=true, array=true)
+        expect(environment["object1"]["some.list"]).to eq(some_list)
+      end
+
+      it "appends to a list" do
+        some_list = "brown fox".split(" ")
+        environment = Utils.hash_set_recursive("object1#my_list", some_list, environment, create_if_missing=true, array=true)
+        expect(environment["object1"]["my_list"]).to eq(["hello", "world"] + some_list)
       end
     end
   end
