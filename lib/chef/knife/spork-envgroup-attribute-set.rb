@@ -44,8 +44,14 @@ module KnifeSpork
         environment = load_environment_from_file(env)
 
         ui.msg "Modifying #{env}"
-        override_attribute(@name_args[1], value, environment, create_if_missing = create_if_missing)
+        
+        create_if_missing = if config[:create_if_missing].nil?
+                              false
+                            else
+                              true
+                            end
 
+        override_attribute(@name_args[1], value, environment, create_if_missing = create_if_missing)
         new_environment_json = pretty_print_json(environment.to_hash)
         save_environment_changes(env, new_environment_json)
 
@@ -56,15 +62,6 @@ module KnifeSpork
       run_plugins(:after_envgroup_attribute_set)
     end
   
-    private
-    def create_if_missing
-      if config[:create_if_missing].nil?
-        false
-      else
-        true
-      end
-    end
-
     def value
       value = @name_args[2]
       if config.has_key? :force_string
@@ -82,7 +79,7 @@ module KnifeSpork
 
     def override_attribute(attribute, value, environment, create_if_missing = false)
       environment.override_attributes = Utils.hash_set_recursive(attribute, value,
-        environment.override_attributes, create_if_missing)
+        environment.override_attributes, create_if_missing = create_if_missing)
     end
   end
 end
