@@ -18,6 +18,10 @@ module KnifeSpork
            :long => '--force_string',
            :description => 'Force value to a string'
 
+    option :is_array,
+           :long => '--is_array',
+           :description => 'treat value as an array'
+
     def run 
       self.config = Chef::Config.merge!(config)
 
@@ -44,7 +48,8 @@ module KnifeSpork
         environment = load_environment_from_file(env)
 
         ui.msg "Modifying #{env}"
-        override_attribute(@name_args[1], value, environment, create_if_missing = create_if_missing)
+        override_attribute(@name_args[1], value, environment, 
+          create_if_missing = create_if_missing, is_array = is_array)
 
         new_environment_json = pretty_print_json(environment.to_hash)
         save_environment_changes(env, new_environment_json)
@@ -65,10 +70,26 @@ module KnifeSpork
       end
     end
 
+    def is_array
+      if config.has_key? :is_array
+        begin 
+          @name_args[2].split(",")
+        rescue NoMethodError
+          ui.error("#{value} is not array of values. HINT: Place commas delimiting each value")
+          exit 1
+        end
+        true
+      else 
+        false
+      end
+    end
+
     def value
       value = @name_args[2]
       if config.has_key? :force_string
         value
+      elsif is_array
+        value.split(",")
       elsif value == "true"
         true
       elsif value =="false"
@@ -80,9 +101,10 @@ module KnifeSpork
       end
     end
 
-    def override_attribute(attribute, value, environment, create_if_missing = false)
-      environment.override_attributes = Utils.hash_set_recursive(attribute, value,
-        environment.override_attributes, create_if_missing)
+    def override_attribute(attribute, value, environment, create_if_missing = false, is_array = false)
+      environment.override_attributes = Utils.hash_set_recursive(
+        attribute, value, environment.override_attributes, 
+        create_if_missing = create_if_missing, is_array = is_array)
     end
   end
 end
