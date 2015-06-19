@@ -191,13 +191,13 @@ module KnifeSpork
         end
       end
 
-      def before_environment_attribute_set
+      def before_envgroup_attribute_set
         if config.auto_push
           git_pull(environment_path)
         end
       end
 
-      def after_environment_attribute_set
+      def after_envgroup_attribute_set
         if config.auto_push
           git_add(environment_path, ".")
 

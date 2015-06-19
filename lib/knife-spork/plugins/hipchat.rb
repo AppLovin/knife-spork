@@ -122,7 +122,7 @@ module KnifeSpork
         hipchat "#{organization}#{current_user} set the run_list for #{object_name} to #{object_secondary_name} #{node_gist}"
       end
 
-      def after_environment_attribute_set
+      def after_envgroup_attribute_set
         attribute = HipchatUtils.prettify_attribute(@options[:args][:attribute])
         hipchat "#{organization}#{current_user} set environment#{attribute} to #{@options[:args][:value]} in #{@options[:args][:environments].join(",")}"
       end
