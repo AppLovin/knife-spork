@@ -3,9 +3,9 @@ require 'knife-spork/runner'
 require 'knife-spork/utils'
 
 module KnifeSpork
-  class SporkEnvironmentAttributeSet < Chef::Knife
+  class SporkEnvgroupAttributeSet < Chef::Knife
 
-    banner 'knife spork environment attribute set ENVIRONMENT ATTRIBUTE VALUE'
+    banner 'knife spork envgroup attribute set ENVIRONMENT ATTRIBUTE VALUE'
 
     include KnifeSpork::Runner
     include Utils
@@ -33,7 +33,7 @@ module KnifeSpork
         ui.error("Environment group #{group} not found.")
       end
 
-      run_plugins(:before_environment_attribute_set)
+      run_plugins(:before_envgroup_attribute_set)
       
       @args = { 
         :environments => spork_config.environment_groups[group],
@@ -53,7 +53,7 @@ module KnifeSpork
         ui.msg "Done modifying #{env} at #{Time.now}"
       end
 
-      run_plugins(:after_environment_attribute_set)
+      run_plugins(:after_envgroup_attribute_set)
     end
   
     private
