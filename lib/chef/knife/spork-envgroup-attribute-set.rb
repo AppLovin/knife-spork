@@ -3,9 +3,9 @@ require 'knife-spork/runner'
 require 'knife-spork/utils'
 
 module KnifeSpork
-  class SporkEnvironmentAttributeSet < Chef::Knife
+  class SporkEnvgroupAttributeSet < Chef::Knife
 
-    banner 'knife spork environment attribute set ENVIRONMENT ATTRIBUTE VALUE'
+    banner 'knife spork envgroup attribute set ENVIRONMENT ATTRIBUTE VALUE'
 
     include KnifeSpork::Runner
     include Utils
@@ -37,7 +37,7 @@ module KnifeSpork
         ui.error("Environment group #{group} not found.")
       end
 
-      run_plugins(:before_environment_attribute_set)
+      run_plugins(:before_envgroup_attribute_set)
       
       @args = { 
         :environments => spork_config.environment_groups[group],
@@ -47,10 +47,14 @@ module KnifeSpork
       spork_config.environment_groups[group].each do |env|
         environment = load_environment_from_file(env)
 
-        ui.msg "Modifying #{env}"
-        override_attribute(@name_args[1], value, environment, 
-          create_if_missing = create_if_missing, is_array = is_array)
+        create_if_missing = if config[:create_if_missing].nil?
+                              false
+                            else
+                              true
+                            end
 
+        ui.msg "Modifying #{env}"
+        override_attribute(@name_args[1], value, environment, create_if_missing = create_if_missing)
         new_environment_json = pretty_print_json(environment.to_hash)
         save_environment_changes(env, new_environment_json)
 
@@ -58,18 +62,9 @@ module KnifeSpork
         ui.msg "Done modifying #{env} at #{Time.now}"
       end
 
-      run_plugins(:after_environment_attribute_set)
+      run_plugins(:after_envgroup_attribute_set)
     end
   
-    private
-    def create_if_missing
-      if config[:create_if_missing].nil?
-        false
-      else
-        true
-      end
-    end
-
     def is_array
       if config.has_key? :is_array
         begin 
