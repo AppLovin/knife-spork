@@ -18,8 +18,8 @@ module KnifeSpork
            :long => '--force_string',
            :description => 'Force value to a string'
 
-    option :is_array,
-           :long => '--is_array',
+    option :append,
+           :long => '--append',
            :description => 'treat value as an array'
 
     def run 
@@ -53,8 +53,9 @@ module KnifeSpork
                               true
                             end
 
+
         ui.msg "Modifying #{env}"
-        override_attribute(@name_args[1], value, environment, create_if_missing = create_if_missing)
+        override_attribute(@name_args[1], value, environment, create_if_missing = create_if_missing, is_array = is_array? )
         new_environment_json = pretty_print_json(environment.to_hash)
         save_environment_changes(env, new_environment_json)
 
@@ -64,9 +65,9 @@ module KnifeSpork
 
       run_plugins(:after_envgroup_attribute_set)
     end
-  
-    def is_array
-      if config.has_key? :is_array
+
+    def is_array?
+      is_array = if config.has_key? :append
         begin 
           @name_args[2].split(",")
         rescue NoMethodError
@@ -78,12 +79,12 @@ module KnifeSpork
         false
       end
     end
-
+  
     def value
       value = @name_args[2]
       if config.has_key? :force_string
         value
-      elsif is_array
+      elsif is_array?
         value.split(",")
       elsif value == "true"
         true
