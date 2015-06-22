@@ -14,7 +14,8 @@ module KnifeSpork
           ]
         },
         "object" => 2,
-        "object4" => "some_string value"
+        "object4" => "some_string value",
+        "my_list" => "1,2"
       }
 
       it "changes value of first level attribute" do 
@@ -67,6 +68,11 @@ module KnifeSpork
       it "changes list to string" do
         environment = Utils.hash_set_recursive("object1#my_list", "hello world", environment)
         expect(environment["object1"]["my_list"]).to eq("hello world")
+      end
+
+      it "changes string to a list" do
+        environment = Utils.hash_set_recursive("my_list", "hello,world".split(","), environment, create_if_missing=false, is_array=true)
+        expect(environment["my_list"]).to eq(["hello", "world"])
       end
     end
   end
