@@ -55,7 +55,7 @@ module KnifeSpork
 
 
         ui.msg "Modifying #{env}"
-        override_attribute(@name_args[1], value, environment, create_if_missing = create_if_missing, is_array = is_array? )
+        override_attribute(@name_args[1], value, environment, create_if_missing = create_if_missing, append = append? )
         new_environment_json = pretty_print_json(environment.to_hash)
         save_environment_changes(env, new_environment_json)
 
@@ -66,7 +66,7 @@ module KnifeSpork
       run_plugins(:after_envgroup_attribute_set)
     end
 
-    def is_array?
+    def append?
       is_array = if config.has_key? :append
         begin 
           @name_args[2].split(",")
@@ -84,7 +84,7 @@ module KnifeSpork
       value = @name_args[2]
       if config.has_key? :force_string
         value
-      elsif is_array?
+      elsif append? | /(.+,){1,}/.match(value)
         value.split(",")
       elsif value == "true"
         true
@@ -97,10 +97,10 @@ module KnifeSpork
       end
     end
 
-    def override_attribute(attribute, value, environment, create_if_missing = false, is_array = false)
+    def override_attribute(attribute, value, environment, create_if_missing = false, append = false)
       environment.override_attributes = Utils.hash_set_recursive(
         attribute, value, environment.override_attributes, 
-        create_if_missing = create_if_missing, is_array = is_array)
+        create_if_missing = create_if_missing, append = append)
     end
   end
 end
