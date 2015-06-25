@@ -40,7 +40,7 @@ module KnifeSpork
       run_plugins(:before_envgroup_attribute_set)
       
       @args = { 
-        :environments => spork_config.environment_groups[group],
+        :environments => [],
         :attribute => @name_args[1], 
         :value => @name_args[2] } 
 
@@ -55,12 +55,18 @@ module KnifeSpork
 
 
         ui.msg "Modifying #{env}"
-        override_attribute(@name_args[1], value, environment, create_if_missing = create_if_missing, append = append? )
-        new_environment_json = pretty_print_json(environment.to_hash)
-        save_environment_changes(env, new_environment_json)
+        modified = override_attribute(@name_args[1], value, environment, create_if_missing = create_if_missing, append = append? )
 
-        environment.save
-        ui.msg "Done modifying #{env} at #{Time.now}"
+        if modified 
+          new_environment_json = pretty_print_json(environment.to_hash)
+          save_environment_changes(env, new_environment_json)
+
+          environment.save
+          ui.msg "Done modifying #{env} at #{Time.now}"
+          @args[:environments] << env
+        else
+            ui.msg "Environment #{env} not modified."
+        end 
       end
 
       run_plugins(:after_envgroup_attribute_set)
@@ -98,9 +104,11 @@ module KnifeSpork
     end
 
     def override_attribute(attribute, value, environment, create_if_missing = false, append = false)
-      environment.override_attributes = Utils.hash_set_recursive(
-        attribute, value, environment.override_attributes, 
-        create_if_missing = create_if_missing, append = append)
+        old_hash = environment.override_attributes.hash
+        environment.override_attributes = Utils.hash_set_recursive(attribute, value, environment.override_attributes, 
+          create_if_missing = create_if_missing, append = append)
+
+        old_hash != environment.override_attributes.hash
     end
   end
 end
