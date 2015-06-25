@@ -1,14 +1,15 @@
-KnifeSpork X
-============
-KnifeSpork X is a modified version of the original [knife-spork project](https://github.com/jonlives/knife-spork) by [@jonlives](https://github.com/jonlives) at Etsy. This fork adds the workflows I have used at AppLovin.
+KnifeArchon
+===========
+Power Overwhelming! KnifeArchon is a tool for manipulating infrastructure managed by chef.
 
+It is a modified version of the original [knife-spork project](https://github.com/jonlives/knife-spork) by [@jonlives](https://github.com/jonlives) at Etsy. This fork adds the workflows I have used at AppLovin.
 
 **Please note**: As of version 1.3.0, knife-spork depends on version 11.0.0 or greater of the chef gem. If you're still using Chef 10, please continue to use knife-spork 1.2.x
 Spork Configuration
 -------------------
 Out of the box, knife spork will work with no configuration. However, you can optionally enable several features to enhance its functionality.
 
-KnifeSpork will look for a configuration file in the following locations, in ascending order of precedence:
+KnifeArchon will look for a configuration file in the following locations, in ascending order of precedence:
 
 - `config/spork-config.yml`
 - `/etc/spork-config.yml`
@@ -99,7 +100,7 @@ plugins:
 ```
 
 #### Default Environments
-The `default_environments` directive allows you to specify a default list of environments you want to promote changes to. If this option is configured and you *omit* the environment parameter when promoting KnifeSpork will promote to all environments in this list.
+The `default_environments` directive allows you to specify a default list of environments you want to promote changes to. If this option is configured and you *omit* the environment parameter when promoting KnifeArchon will promote to all environments in this list.
 
 #### Environment Groups
 The `environment_groups` directive allows you to specify a list of environments referenced by group names that you want to promote changes to.
