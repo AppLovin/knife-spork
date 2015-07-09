@@ -213,12 +213,12 @@ module KnifeSpork
         node_file = File.expand_path( File.join(node_path, "#{node}.json") )
         File.open(node_file, 'w'){ |f| f.puts(json) }
         git_add(node_path, "#{node}.json")
-        git_commit(node_path, "[NODE] Updated #{node}")
+        git_commit(node_path, "Updated #{node}")
         git_push(branch) if config.auto_push
       end
       def delete_node(node)
         git_rm(node_path, "#{node}.json")
-        git_commit(node_path, "[NODE] Deleted #{node}")
+        git_commit(node_path, "Deleted #{node}")
         git_push(branch) if config.auto_push
       end
 
@@ -227,13 +227,13 @@ module KnifeSpork
         role_file = File.expand_path( File.join(role_path, "#{role}.json") )
         File.open(role_file, 'w'){ |f| f.puts(json) }
         git_add(role_path, "#{role}.json")
-        git_commit(role_path, "[ROLE] Updated #{role}")
+        git_commit(role_path, "Updated #{role}")
         git_push(branch)
       end
       def delete_role(role)
         git_rm(role_path, "#{role}.json")
         if config.auto_push
-          git_commit(role_path, "[ROLE] Deleted #{role}")
+          git_commit(role_path, "Deleted #{role}")
           git_push(branch)
         end
       end
@@ -243,12 +243,12 @@ module KnifeSpork
         environment_file = File.expand_path( File.join(environment_path, "#{environment}.json") )
         File.open(environment_file, 'w'){ |f| f.puts(json) }
         git_add(environment_path, "#{environment}.json")
-        git_commit(environment_path, "[ENV] Updated #{environment}")
+        git_commit(environment_path, "Updated #{environment}")
         git_push(branch) if config.auto_push
       end
       def delete_environment(environment)
         git_rm(environment_path, "#{environment}.json")
-        git_commit(environment_path, "[ENV] Deleted #{environment}")
+        git_commit(environment_path, "Deleted #{environment}")
         git_push(branch) if config.auto_push
       end
 
