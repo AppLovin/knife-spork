@@ -25,7 +25,7 @@ module KnifeSpork
         ui.error("Environment group #{group} not found.")
       end
 
-      run_plugins(:before_envgroup_attribute_set)
+      run_plugins(:before_envgroup_attribute_unset)
       
       @args = { 
         :environments => [],
@@ -50,7 +50,7 @@ module KnifeSpork
         end 
       end
 
-      run_plugins(:after_envgroup_attribute_set)
+      run_plugins(:after_envgroup_attribute_unset)
     end
 
     def unset_attribute(attribute, environment)
