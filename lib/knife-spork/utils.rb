@@ -24,5 +24,26 @@ module KnifeSpork
 
       hash
     end   
+
+    def self.hash_unset(attr, hash)
+      parts = attr.split(OBJECT_DELIMITER)
+      levels = parts.slice(0, parts.length - 1)
+      attr = parts[-1]
+      curr_hash = hash
+
+      levels.each do |lvl|
+        if ! curr_hash.has_key? lvl 
+          hash
+        else
+          curr_hash = curr_hash[lvl]
+        end 
+      end  
+
+      if curr_hash.has_key? attr
+        curr_hash.delete(attr) 
+      end
+
+      hash
+    end
   end
 end
