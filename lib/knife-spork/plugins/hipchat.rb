@@ -131,6 +131,11 @@ module KnifeSpork
         hipchat "#{organization}#{current_user} set environment#{attribute} to #{@options[:args][:value]} in #{@options[:args][:environments].join(",")}"
       end
 
+      def after_envgroup_attribute_unset
+        attribute = HipchatUtils.prettify_attribute(@options[:args][:attribute])
+        hipchat "#{organization}#{current_user} unset environment#{attribute} in #{@options[:args][:environments].join(",")}"
+      end
+
       private
       def hipchat(message)
         safe_require 'hipchat'
