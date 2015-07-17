@@ -207,6 +207,23 @@ module KnifeSpork
           git_push(branch)
         end
       end
+
+      def before_envgroup_attribute_unset
+        if config.auto_push
+          git_pull(environment_path)
+        end
+      end
+
+      def after_envgroup_attribute_unset
+        if config.auto_push
+          git_add(environment_path, ".")
+
+          attribute = HipchatUtils.prettify_attribute(@options[:args][:attribute])
+          git_commit(environment_path, "Unset environment#{attribute} in #{@options[:args][:environments].join(",")}")
+
+          git_push(branch)
+        end
+      end
     
       def save_node(node)
         json = JSON.pretty_generate(Chef::Node.load(node))
