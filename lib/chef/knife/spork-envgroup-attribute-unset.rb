@@ -36,7 +36,7 @@ module KnifeSpork
         environment = load_environment_from_file(env)
 
         ui.msg "Modifying #{env}"
-        modified = unset_attribute(@name_args[1], environment, create_if_missing)
+        modified = unset_attribute(@name_args[1], environment)
 
         if modified 
           new_environment_json = pretty_print_json(environment.to_hash)
