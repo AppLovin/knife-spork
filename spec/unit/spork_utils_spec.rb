@@ -54,8 +54,9 @@ module KnifeSpork
       }
 
       it "changes value of first level attribute" do 
+        expect(environment["object3"]).to eq(nil)
         environment = Utils.hash_set_recursive("object3", 1, environment) 
-        expect(environment["object3"]).to eq(1)
+        expect(environment["object3"]).to eq(nil)
       end
 
       it "changes value of nested attribute" do 
@@ -78,13 +79,13 @@ module KnifeSpork
         expect(environment["object4"]["object6"].nil?).to eq(true)
       end
 
-      it "changes value of attribute that is # delimited" do 
-        environment = Utils.hash_set_recursive("object1#object2#attribute.something", 2, environment)
+      it "changes value of attribute that . delimited" do
+        environment = Utils.hash_set_recursive("object1#object2#attribute.something", 2, environment, create_if_missing=true)
         expect(environment["object1"]["object2"]["attribute.something"]).to eq(2)
       end
 
-      it "changes value of first level attribute that is # delimited" do 
-        environment = Utils.hash_set_recursive("object1#attribute.something", 2, environment)
+      it "changes value of first level attribute that is . delimited" do
+        environment = Utils.hash_set_recursive("object1#attribute.something", 2, environment, create_if_missing=true)
         expect(environment["object1"]["attribute.something"]).to eq(2)
       end
 

@@ -6,7 +6,7 @@ module KnifeSpork
       if ! attr.include? OBJECT_DELIMITER
         if append & ! (hash[attr].nil?) & (hash[attr].class == Array)
           hash[attr] = hash[attr] + to
-        else
+        elsif hash.has_key? attr or create_if_missing
           hash[attr] = to
         end
       else 
