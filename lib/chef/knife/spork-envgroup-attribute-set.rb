@@ -105,7 +105,7 @@ module KnifeSpork
 
     def override_attribute(attribute, value, environment, create_if_missing = false, append = false)
         old_hash = environment.override_attributes.hash
-        environment.override_attributes = Utils.hash_set_recursive(attribute, value, environment.override_attributes, 
+        environment.override_attributes = Utils.hash_set(attribute, value, environment.override_attributes, 
           create_if_missing = create_if_missing, append = append)
 
         old_hash != environment.override_attributes.hash

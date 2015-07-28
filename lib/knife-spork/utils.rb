@@ -2,7 +2,7 @@ module KnifeSpork
   module Utils
     OBJECT_DELIMITER = "#"
 
-    def self.hash_set_recursive(full_attr, to, hash, create_if_missing = false, append = false) 
+    def self.hash_set(full_attr, to, hash, create_if_missing = false, append = false) 
       *levels, attr = full_attr.split(OBJECT_DELIMITER)
       parent_hash = levels.inject(hash) do |acc, obj|
       

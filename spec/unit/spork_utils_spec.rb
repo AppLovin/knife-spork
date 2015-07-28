@@ -37,7 +37,7 @@ module KnifeSpork
     end
 
 
-    describe "hash_set_recursive" do
+    describe "hash_set" do
       environment = {
         "object1" => {
           "object2" => {
@@ -55,54 +55,54 @@ module KnifeSpork
 
       it "changes value of first level attribute" do 
         expect(environment["object3"]).to eq(nil)
-        environment = Utils.hash_set_recursive("object3", 1, environment) 
+        environment = Utils.hash_set("object3", 1, environment) 
         expect(environment["object3"]).to eq(1)
       end
 
       it "changes value of nested attribute" do 
-        environment = Utils.hash_set_recursive("object1#object2#attribute", 2, environment)
+        environment = Utils.hash_set("object1#object2#attribute", 2, environment)
         expect(environment["object1"]["object2"]["attribute"]).to eq(2)
       end
 
       it "changes value of nonexistent nested attribute" do 
-        environment = Utils.hash_set_recursive("object1#object3#attribute", 2, environment, create_if_missing=true)
+        environment = Utils.hash_set("object1#object3#attribute", 2, environment, create_if_missing=true)
         expect(environment["object1"]["object3"]["attribute"]).to eq(2)
       end
 
       it "changes value of existing attribute when new attribute has more nesting" do 
-        environment = Utils.hash_set_recursive("object4#object5#attribute", 2, environment, create_if_missing=true)
+        environment = Utils.hash_set("object4#object5#attribute", 2, environment, create_if_missing=true)
         expect(environment["object4"]["object5"]["attribute"]).to eq(2)
       end
 
       it "changes value of attribute that . delimited" do
-        environment = Utils.hash_set_recursive("object1#object2#attribute.something", 2, environment, create_if_missing=true)
+        environment = Utils.hash_set("object1#object2#attribute.something", 2, environment, create_if_missing=true)
         expect(environment["object1"]["object2"]["attribute.something"]).to eq(2)
       end
 
       it "changes value of first level attribute that is . delimited" do
-        environment = Utils.hash_set_recursive("object1#attribute.something", 2, environment, create_if_missing=true)
+        environment = Utils.hash_set("object1#attribute.something", 2, environment, create_if_missing=true)
         expect(environment["object1"]["attribute.something"]).to eq(2)
       end
 
       it "creates a list" do 
         some_list = "the quick brown fox".split(" ")
-        environment = Utils.hash_set_recursive("object1#some.list", some_list, environment, create_if_missing=true, append=true)
+        environment = Utils.hash_set("object1#some.list", some_list, environment, create_if_missing=true, append=true)
         expect(environment["object1"]["some.list"]).to eq(some_list)
       end
 
       it "appends to a list" do
         some_list = "brown fox".split(" ")
-        environment = Utils.hash_set_recursive("object1#my_list", some_list, environment, create_if_missing=true, append=true)
+        environment = Utils.hash_set("object1#my_list", some_list, environment, create_if_missing=true, append=true)
         expect(environment["object1"]["my_list"]).to eq(["hello", "world"] + some_list)
       end
 
       it "changes list to string" do
-        environment = Utils.hash_set_recursive("object1#my_list", "hello world", environment)
+        environment = Utils.hash_set("object1#my_list", "hello world", environment)
         expect(environment["object1"]["my_list"]).to eq("hello world")
       end
 
       it "changes string to a list" do
-        environment = Utils.hash_set_recursive("my_list", "hello,world".split(","), environment, create_if_missing=false, append=true)
+        environment = Utils.hash_set("my_list", "hello,world".split(","), environment, create_if_missing=false, append=true)
         expect(environment["my_list"]).to eq(["hello", "world"])
       end
     end
