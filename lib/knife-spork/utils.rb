@@ -3,7 +3,9 @@ module KnifeSpork
     OBJECT_DELIMITER = "#"
 
     def self.hash_set(full_attr, to, hash, create_if_missing = false, append = false) 
-      *levels, attr = full_attr.split(OBJECT_DELIMITER)
+      *levels, attr = full_attr.scan(/((?<=.)"[\w+_\.]+")|([\w_]+)/).flatten.compact
+      attr = attr.gsub('"',"")
+
       parent_hash = levels.inject(hash) do |acc, obj|
       
         if acc.class == Hash and ! acc.has_key? obj 
