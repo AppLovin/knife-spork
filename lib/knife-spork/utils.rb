@@ -25,8 +25,8 @@ module KnifeSpork
     end   
 
     def self.hash_unset(full_attr, hash)
-      *levels, attr = full_attr.split(OBJECT_DELIMITER)
-      levels.inject(hash, :fetch).delete attr
+      *levels, attr = full_attr.scan(/((?<=.)"[\w+_\.]+")|([\w_]+)/).flatten.compact
+      levels.inject(hash, :fetch).delete attr.gsub('"',"")
 
       hash
     end
