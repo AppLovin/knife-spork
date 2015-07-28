@@ -1,6 +1,7 @@
 require 'chef/knife'
 require 'knife-spork/runner'
 require 'knife-spork/utils'
+require 'set'
 
 module KnifeSpork
   class SporkEnvgroupAttributeSet < Chef::Knife
@@ -33,8 +34,17 @@ module KnifeSpork
 
       group = @name_args.first
 
-      if spork_config.environment_groups[group].nil?
+      environments = if ! spork_config.environment_groups[group].nil?
+                      spork_config.environment_groups[group]
+                    elsif Set.new(group.split(",")).subset? Set.new(spork_config.environment_groups.to_hash.values.flatten)
+                      group.split(",") 
+                    else
+                      []
+                    end
+
+      if environments.length == 0
         ui.error("Environment group #{group} not found.")
+        exit 2
       end
 
       run_plugins(:before_envgroup_attribute_set)
@@ -44,7 +54,7 @@ module KnifeSpork
         :attribute => @name_args[1], 
         :value => @name_args[2] } 
 
-      spork_config.environment_groups[group].each do |env|
+      environments.each do |env|
         environment = load_environment_from_file(env)
 
         create_if_missing = if config[:create_if_missing].nil?
