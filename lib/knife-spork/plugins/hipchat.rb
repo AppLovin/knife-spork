@@ -1,12 +1,9 @@
 require 'knife-spork/plugins/plugin'
-require 'knife-spork/plugins/utils/hipchat'
 
 module KnifeSpork
   module Plugins
     class HipChat < Plugin
       name :hipchat
-
-      include KnifeSpork::Plugins::Utils
 
       def perform; end
 
@@ -127,13 +124,11 @@ module KnifeSpork
       end
 
       def after_envgroup_attribute_set
-        attribute = HipchatUtils.prettify_attribute(@options[:args][:attribute])
-        hipchat "#{organization}#{current_user} set environment#{attribute} to #{@options[:args][:value]} in #{@options[:args][:environments].join(",")}"
+        hipchat "#{organization}#{current_user} set environment#{@options[:args][:attribute]} to #{@options[:args][:value]} in #{@options[:args][:environments].join(",")}"
       end
 
       def after_envgroup_attribute_unset
-        attribute = HipchatUtils.prettify_attribute(@options[:args][:attribute])
-        hipchat "#{organization}#{current_user} unset environment#{attribute} in #{@options[:args][:environments].join(",")}"
+        hipchat "#{organization}#{current_user} unset #{@options[:args][:attribute]} in #{@options[:args][:environments].join(",")}"
       end
 
       private
