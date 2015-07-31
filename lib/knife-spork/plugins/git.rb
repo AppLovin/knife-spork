@@ -251,9 +251,6 @@ module KnifeSpork
       end
 
       def save_environment(environment)
-        json = JSON.pretty_generate(Chef::Environment.load(environment))
-        environment_file = File.expand_path( File.join(environment_path, "#{environment}.json") )
-        File.open(environment_file, 'w'){ |f| f.puts(json) }
         git_add(environment_path, "#{environment}.json")
         git_commit(environment_path, "Updated #{environment}")
         git_push(branch) if config.auto_push
