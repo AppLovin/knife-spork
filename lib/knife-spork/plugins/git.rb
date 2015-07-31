@@ -235,9 +235,6 @@ module KnifeSpork
       end
 
       def save_role(role)
-        json = JSON.pretty_generate(Chef::Role.load(role))
-        role_file = File.expand_path( File.join(role_path, "#{role}.json") )
-        File.open(role_file, 'w'){ |f| f.puts(json) }
         git_add(role_path, "#{role}.json")
         git_commit(role_path, "Updated #{role}")
         git_push(branch)

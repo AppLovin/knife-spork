@@ -125,6 +125,12 @@ module KnifeSpork
         File.open(environment_path, 'w'){ |f| f.puts(json) }
       end
 
+      def save_role_changes(role, json)
+        roles_path = File.expand_path( File.join(role_path, "#{role}.json") )
+
+        File.open(roles_path, 'w'){ |f| f.puts(json) }
+      end
+
       def valid_version?(version)
         version_keys = version.split('.')
         return false unless version_keys.size == 3 && version_keys.any?{ |k| begin Float(k); rescue false; else true; end }
