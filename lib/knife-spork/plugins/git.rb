@@ -249,7 +249,10 @@ module KnifeSpork
 
       def save_environment(environment)
         git_add(environment_path, "#{environment}.json")
-        git_commit(environment_path, "Updated #{environment}")
+
+        commit_msg = ui.ask_question("Enter commit message: ", :default_value => "Updated #{environment}")
+
+        git_commit(environment_path, commit_msg)
         git_push(branch) if config.auto_push
       end
       def delete_environment(environment)
