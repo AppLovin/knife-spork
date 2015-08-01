@@ -236,7 +236,10 @@ module KnifeSpork
 
       def save_role(role)
         git_add(role_path, "#{role}.json")
-        git_commit(role_path, "Updated #{role}")
+
+        commit_msg = ui.ask_question("Enter commit message: ", :default_value => "Updated #{role}")
+
+        git_commit(role_path, commit_msg)
         git_push(branch)
       end
       def delete_role(role)
