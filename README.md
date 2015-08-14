@@ -17,7 +17,7 @@ knife spork envgroup attribute set ENVIRONMENT ATTRIBUTE VALUE
 knife spork envgroup attribute unset ENVIRONMENT ATTRIBUTE
 ```
 
-#### Example (passing a list of environments)
+#### Change an attribute in a given list of environments
 
 ```
 $ knife spork envgroup attribute set Environment1,Environment2 hello world
@@ -29,6 +29,17 @@ Done modifying Environment2 at 2015-08-06 23:55:07 -0700
 Git add'ing /chef-repo/environments/.
 Git: Committing changes...
 Git: Pushing to master
+```
+
+This will add the key ```hello``` and set it with the value of ```world``` in the override_attributes section of the environment json: 
+
+```json
+{
+...
+  "override_attributes": {
+    "hello": "world"
+  }
+}
 ```
 
 #### Example (passing an environment group)
