@@ -35,7 +35,6 @@ This will add the key ```hello``` and set it with the value of ```world``` in th
 
 ```json
 {
-...
   "override_attributes": {
     "hello": "world"
   }
