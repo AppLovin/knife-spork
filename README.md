@@ -4,9 +4,7 @@ Power Overwhelming! KnifeArchon is a tool for manipulating infrastructure manage
 
 It is a modified version of the original [knife-spork project](https://github.com/jonlives/knife-spork) by [@jonlives](https://github.com/jonlives) at Etsy. This fork adds the workflows I have used at AppLovin.
 
-**Please note**: As of version 1.3.0, knife-spork depends on version 11.0.0 or greater of the chef gem. If you're still using Chef 10, please continue to use knife-spork 1.2.x
-
-New Commands
+Featured Commands
 ------------
 Knife Archon extends Knife Spork by adding several commands that I have used managing chef entities. 
 
