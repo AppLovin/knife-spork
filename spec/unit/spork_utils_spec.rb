@@ -109,6 +109,15 @@ module KnifeSpork
         environment = Utils.hash_set("my_list", "hello,world".split(","), environment, create_if_missing=false, append=true)
         expect(environment["my_list"]).to eq(["hello", "world"])
       end
+
+      it "accepts hash" do
+        some_hash = {
+          "hello" => "world",
+          "brown" => "fox"
+        }
+        environment = Utils.hash_set("some_hash", some_hash, environment)
+        expect(environment["some_hash"]).to eq(some_hash)
+      end
     end
   end
 end
