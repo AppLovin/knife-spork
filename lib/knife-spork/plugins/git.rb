@@ -198,7 +198,13 @@ module KnifeSpork
         if config.auto_push
           git_add(environment_path, ".")
 
-          git_commit(environment_path, "Set #{@options[:args][:attribute]} to #{@options[:args][:value]} in #{@options[:args][:environments].join(",")}")
+          commit_msg = "Set #{@options[:args][:attribute]} to #{@options[:args][:value]} in #{@options[:args][:environments].join(",")}" 
+          if @options[:args][:remarks]
+            asana = ui.ask_question("Enter commit message: ", :default_value => "")
+            commit_msg = "#{commit_msg} #{asana}"
+          end
+
+          git_commit(environment_path, commit_msg)
 
           git_push(branch)
         end

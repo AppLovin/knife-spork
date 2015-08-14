@@ -23,6 +23,10 @@ module KnifeSpork
            :long => '--append',
            :description => 'treat value as an array'
 
+    option :remarks,
+           :long => '--remarks',
+           :description => 'append to git commit message'
+
     def run 
       self.config = Chef::Config.merge!(config)
 
@@ -52,7 +56,9 @@ module KnifeSpork
       @args = { 
         :environments => [],
         :attribute => @name_args[1], 
-        :value => @name_args[2] } 
+        :value => @name_args[2], 
+        :remarks => config[:remarks].nil? == false
+        } 
 
       environments.each do |env|
         environment = load_environment_from_file(env)
