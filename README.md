@@ -41,9 +41,24 @@ This will add the key ```hello``` and set it with the value of ```world``` in th
 }
 ```
 
-#### Example (passing an environment group)
+#### Set an attribute given the name of a group of environments
+
 ```
 knife spork envgroup attribute set test hello world
+```
+
+The yaml config lets one group environments before hand and the envgroup feature can accept the name of the group instead. In the following example the "test" group consists of chef environments Environment1 and Environment2. By passing in this group name, the same end result as above can be achieved: 
+
+```
+$ knife spork envgroup attribute set test hello world
+Git: Pulling latest changes from /chef-repo/environments
+Modifying Environment1
+Done modifying Environment1 at 2015-08-06 23:55:06 -0700
+Modifying Environment2
+Done modifying Environment2 at 2015-08-06 23:55:07 -0700
+Git add'ing /chef-repo/environments/.
+Git: Committing changes...
+Git: Pushing to master
 ```
 
 Spork Configuration
