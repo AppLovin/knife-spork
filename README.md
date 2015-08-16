@@ -61,6 +61,19 @@ Git: Committing changes...
 Git: Pushing to master
 ```
 
+#### Unsetting environment attributes
+
+```bash
+$ knife spork envgroup attribute unset test hello
+Git: Pulling latest changes from /chef-repo/environments
+Modifying TestEnvironment4
+Done modifying TestEnvironment4 at 2015-08-16 13:36:48 -0700
+Modifying TestEnvironment5
+Done modifying TestEnvironment5 at 2015-08-16 13:36:48 -0700
+Git add'ing /chef-repo/environments/.
+Git: Committing changes...
+Git: Pushing to test
+```
 Spork Configuration
 -------------------
 Out of the box, knife spork will work with no configuration. However, you can optionally enable several features to enhance its functionality.
