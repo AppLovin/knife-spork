@@ -326,8 +326,6 @@ module KnifeSpork
             git_add(role_path, object_name)
             git_commit(role_path, @options[:args][:git_message])
             git_push(branch)
-          else
-            raise "Git message (-m) required since git auto_push is enabled"
           end
         end         
       end
