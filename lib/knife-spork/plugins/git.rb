@@ -7,6 +7,16 @@ module KnifeSpork
 
       def perform; end
 
+      def auto_push_disabled?(method)
+        blacklist = if config.auto_push.blacklist.class == Array
+          config.auto_push.blacklist
+        else
+          []
+        end
+
+        blacklist.include? method
+      end
+
       # Role Git wrappers
       def before_rolecreate
         if config.auto_push
