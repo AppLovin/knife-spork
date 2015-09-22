@@ -6,10 +6,10 @@ module KnifeSpork::Plugins
     it "checks if hook is allowed to auto_push" do
       config = AppConf.new
       config.from_hash({
-        :plugins => {
-          :git => {
-            :auto_push => {
-              :blacklist => [
+        "plugins" => {
+          "git" => {
+            "auto_push" => {
+              "disabled" => [
                 "after_envgroup_attribute_set"
               ]
             }
