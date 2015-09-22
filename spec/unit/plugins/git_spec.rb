@@ -18,7 +18,7 @@ module KnifeSpork::Plugins
       })
 
       git_plugin = Git.new(:config => config)
-      expect(git_plugin.auto_push_disabled?("after_envgroup_attribute_set")).to eq true
+      expect(git_plugin.auto_push_disabled?(:after_envgroup_attribute_set)).to eq true
     end
   end
 end
