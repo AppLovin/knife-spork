@@ -13,13 +13,14 @@ module KnifeSpork
     module ClassMethods; end
 
     module InstanceMethods
+
       def spork_config
         return @spork_config unless @spork_config.nil?
 
         @spork_config = AppConf.new
-        load_paths = [ File.expand_path("#{cookbook_path.gsub('cookbooks','')}/config/spork-config.yml"), File.expand_path('config/spork-config.yml'), '/etc/spork-config.yml', File.expand_path('~/.chef/spork-config.yml'), File.expand_path("~/spork-config.yml") ]
         load_paths.each do |load_path|
           if File.exists?(load_path)
+            @spork_config = AppConf.new
             @spork_config.load(load_path)
           end
         end
@@ -341,6 +342,11 @@ module KnifeSpork
     def self.included(receiver)
       receiver.extend(ClassMethods)
       receiver.send(:include, InstanceMethods)
+    end
+
+    private
+    def load_paths
+      [ File.expand_path("#{cookbook_path.gsub('cookbooks','')}/config/spork-config.yml"), File.expand_path('config/spork-config.yml'), '/etc/spork-config.yml', File.expand_path('~/.chef/spork-config.yml'), File.expand_path("~/spork-config.yml") ]
     end
   end
 end
