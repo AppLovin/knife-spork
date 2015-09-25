@@ -196,13 +196,13 @@ module KnifeSpork
         end
       end
 
-      def before_envgroup_attribute_set
+      def before_environment_attribute_set
         if ! auto_push_disabled? __method__
           git_pull(environment_path)
         end
       end
 
-      def after_envgroup_attribute_set
+      def after_environment_attribute_set
         if ! auto_push_disabled? __method__
           git_add(environment_path, ".")
 
@@ -218,13 +218,13 @@ module KnifeSpork
         end
       end
 
-      def before_envgroup_attribute_unset
+      def before_environment_attribute_unset
         if ! auto_push_disabled? __method__
           git_pull(environment_path)
         end
       end
 
-      def after_envgroup_attribute_unset
+      def after_environment_attribute_unset
         if ! auto_push_disabled? __method__
           git_add(environment_path, ".")
 

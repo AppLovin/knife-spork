@@ -3,9 +3,9 @@ require 'knife-spork/runner'
 require 'knife-spork/utils'
 
 module KnifeSpork
-  class SporkEnvgroupAttributeUnset < Chef::Knife
+  class SporkEnvironmentAttributeUnset < Chef::Knife
 
-    banner 'knife spork envgroup attribute unset ENVIRONMENT ATTRIBUTE'
+    banner 'knife spork environment attribute unset ENVIRONMENT ATTRIBUTE'
 
     include KnifeSpork::Runner
     include Utils

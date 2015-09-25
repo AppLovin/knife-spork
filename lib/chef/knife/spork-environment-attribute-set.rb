@@ -4,9 +4,9 @@ require 'knife-spork/utils'
 require 'set'
 
 module KnifeSpork
-  class SporkEnvgroupAttributeSet < Chef::Knife
+  class SporkEnvironmentAttributeSet < Chef::Knife
 
-    banner 'knife spork envgroup attribute set ENVIRONMENT ATTRIBUTE VALUE'
+    banner 'knife spork environment attribute set ENVIRONMENT ATTRIBUTE VALUE'
 
     include KnifeSpork::Runner
     include Utils
