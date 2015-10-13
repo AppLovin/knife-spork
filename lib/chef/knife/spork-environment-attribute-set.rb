@@ -4,9 +4,9 @@ require 'knife-spork/utils'
 require 'set'
 
 module KnifeSpork
-  class SporkEnvgroupAttributeSet < Chef::Knife
+  class SporkEnvironmentAttributeSet < Chef::Knife
 
-    banner 'knife spork envgroup attribute set ENVIRONMENT ATTRIBUTE VALUE'
+    banner 'knife spork environment attribute set ENVIRONMENT ATTRIBUTE VALUE'
 
     include KnifeSpork::Runner
     include Utils
@@ -51,7 +51,7 @@ module KnifeSpork
         exit 2
       end
 
-      run_plugins(:before_envgroup_attribute_set)
+      run_plugins(:before_environment_attribute_set)
       
       @args = { 
         :environments => [],
@@ -85,7 +85,7 @@ module KnifeSpork
         end 
       end
 
-      run_plugins(:after_envgroup_attribute_set)
+      run_plugins(:after_environment_attribute_set)
     end
 
     def append?

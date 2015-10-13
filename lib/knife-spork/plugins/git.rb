@@ -7,9 +7,17 @@ module KnifeSpork
 
       def perform; end
 
+      def auto_push_disabled?(method)
+        begin
+          config.auto_push.disabled.include? method.to_s
+        rescue NoMethodError
+          config.auto_push == false
+        end
+      end
+
       # Role Git wrappers
       def before_rolecreate
-        if config.auto_push
+        if ! auto_push_disabled? __method__
           if !File.directory?(role_path)
             ui.error "Role path #{role_path} does not exist"
             exit 1
@@ -22,7 +30,7 @@ module KnifeSpork
         end
       end
       def after_rolecreate
-        if config.auto_push
+        if ! auto_push_disabled? __method__
           if !File.directory?(role_path)
             ui.error "Role path #{role_path} does not exist"
             exit 1
@@ -31,7 +39,7 @@ module KnifeSpork
         end
       end
       def before_roleedit
-        if config.auto_push
+        if ! auto_push_disabled? __method__
           git_pull(role_path)
           if !File.exist?(File.join(role_path, object_name + '.json'))
             ui.error 'Role does not exist in git, please create it first with spork'
@@ -40,24 +48,24 @@ module KnifeSpork
         end
       end
       def after_roleedit
-        if config.auto_push
+        if ! auto_push_disabled? __method__
           save_role(object_name) unless object_difference == ''
         end
       end
       def before_roledelete
-        if config.auto_push
+        if ! auto_push_disabled? __method__
           git_pull(role_path)
         end
       end
       def after_roledelete
-        if config.auto_push
+        if ! auto_push_disabled? __method__
           delete_role(object_name)
         end
       end
 
       # Environmental Git wrappers
       def before_environmentcreate
-        if config.auto_push
+        if ! auto_push_disabled? __method__
           if !File.directory?(environment_path)
             ui.error "Environment path #{environment_path} does not exist"
             exit 1
@@ -70,12 +78,12 @@ module KnifeSpork
         end
       end
       def after_environmentcreate
-        if config.auto_push
+        if ! auto_push_disabled? __method__
           save_environment(object_name) unless object_difference == ''
         end
       end
       def before_environmentedit
-        if config.auto_push
+        if ! auto_push_disabled? __method__
           git_pull(environment_path)
           if !File.exist?(File.join(environment_path, object_name + '.json'))
             ui.error 'Environment does not exist in git, please create it first with spork'
@@ -84,24 +92,24 @@ module KnifeSpork
         end
       end
       def after_environmentedit
-        if config.auto_push
+        if ! auto_push_disabled? __method__
           save_environment(object_name) unless object_difference == ''
         end
       end
       def before_environmentdelete
-        if config.auto_push
+        if ! auto_push_disabled? __method__
           git_pull(environment_path)
         end
       end
       def after_environmentdelete
-        if config.auto_push
+        if ! auto_push_disabled? __method__
           delete_environment(object_name)
         end
       end
 
       # Node Git wrappers
       def before_nodecreate
-        if config.auto_push
+        if ! auto_push_disabled? __method__
           git_pull(node_path)
           if File.exist?(File.join(node_path, object_name + '.json'))
             ui.error 'Node already exists in local git, aborting creation'
@@ -110,12 +118,12 @@ module KnifeSpork
         end
       end
       def after_nodecreate
-        if config.auto_push
+        if ! auto_push_disabled? __method__
           save_node(object_name) unless object_difference == ''
         end
       end
       def before_nodeedit
-        if config.auto_push
+        if ! auto_push_disabled? __method__
           git_pull(node_path)
           if !File.exist?(File.join(node_path, object_name + '.json'))
             ui.error 'Node does not exist in git, please bootstrap one first'
@@ -124,17 +132,17 @@ module KnifeSpork
         end
       end
       def after_nodeedit
-        if config.auto_push
+        if ! auto_push_disabled? __method__
           save_node(object_name) unless object_difference == ''
         end
       end
       def before_nodedelete
-        if config.auto_push
+        if ! auto_push_disabled? __method__
           git_pull(node_path)
         end
       end
       def after_nodedelete
-        if config.auto_push
+        if ! auto_push_disabled? __method__
           delete_node(object_name)
         end
       end
@@ -176,7 +184,7 @@ module KnifeSpork
         environments.each do |environment|
           git_add(environment_path,"#{environment}.json")
         end
-        if config.auto_push
+        if ! auto_push_disabled? __method__
           branch =  if not config.branch.nil?
                       config[:branch] 
                     else 
@@ -188,14 +196,14 @@ module KnifeSpork
         end
       end
 
-      def before_envgroup_attribute_set
-        if config.auto_push
+      def before_environment_attribute_set
+        if ! auto_push_disabled? __method__
           git_pull(environment_path)
         end
       end
 
-      def after_envgroup_attribute_set
-        if config.auto_push
+      def after_environment_attribute_set
+        if ! auto_push_disabled? __method__
           git_add(environment_path, ".")
 
           commit_msg = "Set #{@options[:args][:attribute]} to #{@options[:args][:value]} in #{@options[:args][:environments].join(",")}" 
@@ -210,14 +218,14 @@ module KnifeSpork
         end
       end
 
-      def before_envgroup_attribute_unset
-        if config.auto_push
+      def before_environment_attribute_unset
+        if ! auto_push_disabled? __method__
           git_pull(environment_path)
         end
       end
 
-      def after_envgroup_attribute_unset
-        if config.auto_push
+      def after_environment_attribute_unset
+        if ! auto_push_disabled? __method__
           git_add(environment_path, ".")
 
           git_commit(environment_path, "Unset environment#{@options[:args][:attribute]} in #{@options[:args][:environments].join(",")}")
@@ -232,12 +240,12 @@ module KnifeSpork
         File.open(node_file, 'w'){ |f| f.puts(json) }
         git_add(node_path, "#{node}.json")
         git_commit(node_path, "Updated #{node}")
-        git_push(branch) if config.auto_push
+        git_push(branch)
       end
       def delete_node(node)
         git_rm(node_path, "#{node}.json")
         git_commit(node_path, "Deleted #{node}")
-        git_push(branch) if config.auto_push
+        git_push(branch)
       end
 
       def save_role(role)
@@ -250,10 +258,8 @@ module KnifeSpork
       end
       def delete_role(role)
         git_rm(role_path, "#{role}.json")
-        if config.auto_push
-          git_commit(role_path, "Deleted #{role}")
-          git_push(branch)
-        end
+        git_commit(role_path, "Deleted #{role}")
+        git_push(branch)
       end
 
       def save_environment(environment)
@@ -262,12 +268,12 @@ module KnifeSpork
         commit_msg = ui.ask_question("Enter commit message: ", :default_value => "Updated #{environment}")
 
         git_commit(environment_path, commit_msg)
-        git_push(branch) if config.auto_push
+        git_push(branch)
       end
       def delete_environment(environment)
         git_rm(environment_path, "#{environment}.json")
         git_commit(environment_path, "Deleted #{environment}")
-        git_push(branch) if config.auto_push
+        git_push(branch)
       end
 
       def before_environmentfromfile
@@ -275,7 +281,7 @@ module KnifeSpork
       end
 
       def after_environmentfromfile
-        if config.auto_push
+        if ! auto_push_disabled? __method__ 
           if @options[:args][:git_message].nil? == false
             git_add(environment_path, object_name)
             git_commit(environment_path, @options[:args][:git_message])
@@ -289,7 +295,7 @@ module KnifeSpork
       end
 
       def after_databagfromfile
-        if config.auto_push
+        if ! auto_push_disabled? __method__
           if @options[:args][:git_message].nil? == false
             git_add("#{databag_path}/#{object_name}", object_secondary_name)
             git_commit(databag_path, @options[:args][:git_message])
@@ -305,7 +311,7 @@ module KnifeSpork
       end
 
       def after_nodefromfile
-        if config.auto_push
+        if ! auto_push_disabled? __method__
           if @options[:args][:git_message].nil? == false
             git_add(node_path, "#{object_name}.json")
             git_commit(node_path, @options[:args][:git_message])
@@ -321,7 +327,7 @@ module KnifeSpork
       end
 
       def after_rolefromfile
-        if config.auto_push
+        if ! auto_push_disabled? __method__
           if @options[:args][:git_message].nil? == false
             git_add(role_path, object_name)
             git_commit(role_path, @options[:args][:git_message])
