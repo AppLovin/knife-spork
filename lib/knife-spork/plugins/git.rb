@@ -204,17 +204,19 @@ module KnifeSpork
 
       def after_environment_attribute_set
         if ! auto_push_disabled? __method__
-          git_add(environment_path, ".")
+          g = git
+          g.branch("attribute/#{@options[:args][:attribute]}").checkout
+          g.add(".")
 
           commit_msg = "Set #{@options[:args][:attribute]} to #{@options[:args][:value]} in #{@options[:args][:environments].join(",")}" 
+
           if @options[:args][:remarks]
             asana = ui.ask_question("Enter commit message: ", :default_value => "")
-            commit_msg = "#{commit_msg} #{asana}"
+            commit_msg = "{commit_msg} {asana}"
           end
 
-          git_commit(environment_path, commit_msg)
-
-          git_push(branch)
+          g.commit(commit_msg)
+          g.push("origin", "attribute/#{@options[:args][:attribute]}", true)
         end
       end
 
