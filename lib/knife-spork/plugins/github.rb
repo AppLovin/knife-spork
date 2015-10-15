@@ -15,8 +15,13 @@ module KnifeSpork
 
       def after_environment_attribute_set
         github = ::Octokit::Client.new :access_token => config.token
+
         pull_args = [ "#{/(?<=:).*(?=\.git)/.match(git.remote.url)[0]}",
-                      "master",
+                      if !config.target_branch.nil?
+                        config.target_branch
+                      else
+                        "master"
+                      end,
                       "attribute/some.attribute",
                       "Set #{@options[:args][:attribute]} to #{@options[:args][:value]}",
                       "" ]

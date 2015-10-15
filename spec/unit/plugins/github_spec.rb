@@ -12,6 +12,7 @@ module KnifeSpork::Plugins
       plugins:
         github:
           token: abc123
+          target_branch: test
       EOF
       spork_config.close
 
@@ -40,7 +41,7 @@ module KnifeSpork::Plugins
         expect(::Octokit::Client).to receive(:new).with(:access_token => "abc123").and_return(github)
 
         pull_args = [ "owner/repo",
-                      "master",
+                      "test",
                       "attribute/some.attribute",
                       "Set some.attribute to some.value",
                       "" ]
