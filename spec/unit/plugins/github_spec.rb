@@ -13,6 +13,7 @@ module KnifeSpork::Plugins
         github:
           token: abc123
           target_branch: test
+          enabled: true
       EOF
       spork_config.close
 

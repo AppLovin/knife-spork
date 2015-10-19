@@ -14,19 +14,21 @@ module KnifeSpork
         # github.pull_request
 
       def after_environment_attribute_set
-        github = ::Octokit::Client.new :access_token => config.token
+        if config.enabled
+          github = ::Octokit::Client.new :access_token => config.token
 
-        pull_args = [ "#{/(?<=:).*(?=\.git)/.match(git.remote.url)[0]}",
-                      if !config.target_branch.nil?
-                        config.target_branch
-                      else
-                        "master"
-                      end,
-                      "attribute/some.attribute",
-                      "Set #{@options[:args][:attribute]} to #{@options[:args][:value]}",
-                      "" ]
+          pull_args = [ "#{/(?<=:).*(?=\.git)/.match(git.remote.url)[0]}",
+                        if !config.target_branch.nil?
+                          config.target_branch
+                        else
+                          "master"
+                        end,
+                        "attribute/some.attribute",
+                        "Set #{@options[:args][:attribute]} to #{@options[:args][:value]}",
+                        "" ]
 
-        github.create_pull_request(*pull_args)
+          github.create_pull_request(*pull_args)
+        end
       end
     end
   end
