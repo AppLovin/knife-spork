@@ -23,7 +23,7 @@ module KnifeSpork
                         else
                           "master"
                         end,
-                        "attribute/some.attribute",
+                        "attribute/#{@options[:args][:attribute]}",
                         "Set #{@options[:args][:attribute]} to #{@options[:args][:value]}",
                         "" ]
 
