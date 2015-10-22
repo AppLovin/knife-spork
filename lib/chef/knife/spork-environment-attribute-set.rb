@@ -27,6 +27,10 @@ module KnifeSpork
            :long => '--remarks',
            :description => 'append to git commit message'
 
+    option :no_upload,
+           :long => '--no_upload',
+           :description => 'whether or not to upload environment file'
+
     def run 
       self.config = Chef::Config.merge!(config)
 
@@ -77,7 +81,10 @@ module KnifeSpork
           new_environment_json = pretty_print_json(environment.to_hash)
           save_environment_changes(env, new_environment_json)
 
-          environment.save
+          if config[:no_upload].nil?
+            environment.save
+          end
+
           ui.msg "Done modifying #{env} at #{Time.now}"
           @args[:environments] << env
         else
