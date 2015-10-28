@@ -41,14 +41,14 @@ module KnifeSpork::Plugins
           config = AppConf.new
           config.load(f.path)
 
-          git_plugin = Git.new(:config => config, :args => { :attribute => 'some.attribute', :value => 'some_value', :environments => [ 'TestEnvironment' ]})
+          git_plugin = Git.new(:config => config, :args => { :attribute => 'some.attribute', :value => 'some_value', :environments => [ 'TestEnvironment' ]}, :environment_path => '/path/to/environments')
 
           mock_git = double()
           allow(git_plugin).to receive(:git).and_return(mock_git)
 
           expect(mock_git).to receive(:branch).with("attribute/some.attribute").ordered.and_return(mock_git)
           expect(mock_git).to receive(:checkout).ordered
-          expect(mock_git).to receive(:add).with(".").ordered
+          expect(mock_git).to receive(:add).with('/path/to/environments').ordered
           expect(mock_git).to receive(:commit).with("Set some.attribute to some_value in TestEnvironment").ordered
           expect(mock_git).to receive(:push).with("origin", "attribute/some.attribute", true).ordered
 

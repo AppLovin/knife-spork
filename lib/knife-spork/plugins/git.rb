@@ -206,7 +206,7 @@ module KnifeSpork
         if ! auto_push_disabled? __method__
           g = git
           g.branch("attribute/#{@options[:args][:attribute]}").checkout
-          g.add(".")
+          g.add(environment_path)
 
           commit_msg = "Set #{@options[:args][:attribute]} to #{@options[:args][:value]} in #{@options[:args][:environments].join(",")}" 
 
