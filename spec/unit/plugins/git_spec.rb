@@ -41,7 +41,11 @@ module KnifeSpork::Plugins
           config = AppConf.new
           config.load(f.path)
 
-          git_plugin = Git.new(:config => config, :args => { :attribute => 'some.attribute', :value => 'some_value', :environments => [ 'TestEnvironment' ]}, :environment_path => '/path/to/environments')
+          git_plugin = Git.new( :config => config,
+                                :args => {  :attribute => 'some.attribute',
+                                            :value => 'some_value',
+                                            :environments => [ 'TestEnvironment' ]},
+                                :environment_path => '/path/to/environments')
 
           mock_git = double()
           allow(git_plugin).to receive(:git).and_return(mock_git)
