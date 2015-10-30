@@ -14,7 +14,6 @@ module KnifeSpork
         allow(k).to receive(:spork_config).and_return(spork_config)
         allow(k).to receive(:run_plugins)
         allow(k.ui).to receive(:msg)
-        allow(k).to receive(:config).and_return({ :create_if_missing => true , :no_upload => true })
         allow(k).to receive(:override_attribute).and_return(true)
         allow(k).to receive(:pretty_print_json)
         allow(k).to receive(:save_environment_changes)
@@ -39,6 +38,8 @@ module KnifeSpork
 
     describe "#run" do
       it "does not upload environment if --no_upload is passed" do
+        allow(knife).to receive(:config).and_return({ :create_if_missing => true , :no_upload => true })
+
         expect(test_environment1).not_to receive(:save)
         expect(test_environment2).not_to receive(:save)
 
