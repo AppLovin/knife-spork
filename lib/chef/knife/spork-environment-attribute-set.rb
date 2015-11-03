@@ -108,6 +108,18 @@ module KnifeSpork
         false
       end
     end
+
+    def is_hash?(value)
+      require 'json'
+      is_hash = false
+      begin
+        json = JSON.parse(value)
+        is_hash = true
+      rescue JSON::ParserError
+      end
+
+      is_hash
+    end
   
     def value
       value = @name_args[2]
@@ -121,6 +133,9 @@ module KnifeSpork
         false
       elsif value.is_a? Numeric
         value.to_i 
+      elsif is_hash? value
+        require 'json'
+        JSON::parse(value)
       else
         value
       end
