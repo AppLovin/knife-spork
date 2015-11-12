@@ -16,7 +16,7 @@ knife spork environment attribute unset ENVIRONMENT ATTRIBUTE
 #### Example 1: Pass a list of environments
 
 ```
-$ knife spork envgroup attribute set Environment1,Environment2 hello world
+$ knife spork environment attribute set Environment1,Environment2 hello world
 Modifying Environment1
 Done modifying Environment1 at 2015-08-06 23:55:06 -0700
 Modifying Environment2
