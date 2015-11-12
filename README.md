@@ -13,7 +13,7 @@ knife spork environment attribute set ENVIRONMENT ATTRIBUTE VALUE
 knife spork environment attribute unset ENVIRONMENT ATTRIBUTE
 ```
 
-#### Example 1: Pass a list of environments
+###### Example 1: Pass a list of environments
 
 ```
 $ knife spork environment attribute set Environment1,Environment2 hello world
@@ -33,7 +33,7 @@ This will add the key ```hello``` and set it with the value of ```world``` in th
 }
 ```
 
-#### Example 2: Pass the name of a group of environments as specified in the configuration file
+###### Example 2: Pass the name of a group of environments as specified in the configuration file
 ```
 $ knife spork environment attribute set test hello world
 Modifying Environment1
