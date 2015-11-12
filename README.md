@@ -35,7 +35,7 @@ This will add the key ```hello``` and set it with the value of ```world``` in th
 
 #### Example 2: Pass the name of a group of environments as specified in the configuration file
 ```
-$ knife spork envgroup attribute set test hello world
+$ knife spork environment attribute set test hello world
 Modifying Environment1
 Done modifying Environment1 at 2015-08-06 23:55:06 -0700
 Modifying Environment2
@@ -47,7 +47,7 @@ Done modifying Environment2 at 2015-08-06 23:55:07 -0700
 This is the opposite of ```environment attribute set``` subcommand. It removes an attribute from the environment
 
 ```bash
-$ knife spork envgroup attribute unset test hello
+$ knife spork environment attribute unset test hello
 Modifying TestEnvironment4
 Done modifying TestEnvironment4 at 2015-08-16 13:36:48 -0700
 Modifying TestEnvironment5
