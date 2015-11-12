@@ -42,18 +42,16 @@ Modifying Environment2
 Done modifying Environment2 at 2015-08-06 23:55:07 -0700
 ```
 
-#### Unsetting environment attributes
+### Unset environment attributes
+
+This is the opposite of ```environment attribute set``` subcommand. It removes an attribute from the environment
 
 ```bash
 $ knife spork envgroup attribute unset test hello
-Git: Pulling latest changes from /chef-repo/environments
 Modifying TestEnvironment4
 Done modifying TestEnvironment4 at 2015-08-16 13:36:48 -0700
 Modifying TestEnvironment5
 Done modifying TestEnvironment5 at 2015-08-16 13:36:48 -0700
-Git add'ing /chef-repo/environments/.
-Git: Committing changes...
-Git: Pushing to test
 ```
 
 Spork Info
