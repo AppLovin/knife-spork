@@ -26,6 +26,10 @@ module KnifeSpork::Plugins
     end
 
     describe "after_environment_attribute_set" do
+      let(:mock_git) do
+        double()
+      end
+
       context "when default options are used" do
         it "pushes changes to remote repo" do
           git_plugin = Git.new( :config => AppConf.new,
@@ -34,7 +38,6 @@ module KnifeSpork::Plugins
                                             :environments => [ 'TestEnvironment' ]},
                                 :environment_path => '/path/to/environments')
 
-          mock_git = double()
           allow(git_plugin).to receive(:git).and_return(mock_git)
 
           expect(mock_git).to receive(:branch).with("attribute/some.attribute").ordered.and_return(mock_git)
@@ -70,7 +73,6 @@ module KnifeSpork::Plugins
                                             :environments => [ 'TestEnvironment' ]},
                                 :environment_path => '/path/to/environments')
 
-          mock_git = double()
           allow(git_plugin).to receive(:git).and_return(mock_git)
 
           expect(mock_git).to receive(:branch).with("master").ordered.and_return(mock_git)
