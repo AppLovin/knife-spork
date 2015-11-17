@@ -209,7 +209,14 @@ module KnifeSpork
       def after_environment_attribute_set
         if ! auto_push_disabled? __method__
           g = git
-          g.branch("attribute/#{@options[:args][:attribute]}").checkout
+
+          branch =  begin 
+                      config.branch
+                    rescue NoMethodError 
+                      "attribute/#{@options[:args][:attribute]}"
+                    end 
+
+          g.branch(branch).checkout
           g.add(environment_path)
 
           commit_msg = "Set #{@options[:args][:attribute]} to #{@options[:args][:value]} in #{@options[:args][:environments].join(",")}" 
@@ -220,7 +227,7 @@ module KnifeSpork
           end
 
           g.commit(commit_msg)
-          g.push("origin", "attribute/#{@options[:args][:attribute]}", true)
+          g.push("origin", branch, true)
         end
       end
 

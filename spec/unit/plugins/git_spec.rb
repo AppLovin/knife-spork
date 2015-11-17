@@ -46,6 +46,42 @@ module KnifeSpork::Plugins
           git_plugin.after_environment_attribute_set
         end
       end
+
+      context "when git branch is set" do
+        it "pushes changes to remote repo" do
+          Tempfile.open('config.yml') do |f|
+            f.write(<<-EOF)
+            plugins:
+              git:
+                auto_push: true
+                branch: master
+            EOF
+
+            f.close
+
+            @config = AppConf.new
+            @config.load(f.path)
+          end
+
+
+          git_plugin = Git.new( :config => @config,
+                                :args => {  :attribute => 'some.attribute',
+                                            :value => 'some_value',
+                                            :environments => [ 'TestEnvironment' ]},
+                                :environment_path => '/path/to/environments')
+
+          mock_git = double()
+          allow(git_plugin).to receive(:git).and_return(mock_git)
+
+          expect(mock_git).to receive(:branch).with("master").ordered.and_return(mock_git)
+          expect(mock_git).to receive(:checkout).ordered
+          expect(mock_git).to receive(:add).with('/path/to/environments').ordered
+          expect(mock_git).to receive(:commit).with("Set some.attribute to some_value in TestEnvironment").ordered
+          expect(mock_git).to receive(:push).with("origin", "master", true).ordered
+
+          git_plugin.after_environment_attribute_set
+        end
+      end
     end
   end
 end
