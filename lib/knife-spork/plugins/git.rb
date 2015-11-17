@@ -11,7 +11,11 @@ module KnifeSpork
         begin
           config.auto_push.disabled.include? method.to_s
         rescue NoMethodError
-          config.auto_push == false
+          begin
+            config.auto_push == false
+          rescue NameError
+            false
+          end
         end
       end
 
