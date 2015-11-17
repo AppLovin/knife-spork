@@ -4,34 +4,26 @@ Power Overwhelming! KnifeArchon is a tool for manipulating infrastructure manage
 
 It is a modified version of the original [knife-spork project](https://github.com/jonlives/knife-spork) by [@jonlives](https://github.com/jonlives) at Etsy. This fork adds the workflows I have used at AppLovin.
 
-Featured Commands
+Usage
 ------------
-Knife Archon extends Knife Spork by adding several commands that I have used managing chef entities. 
-
-### Envgroup 
-
-Chief among my use cases is being able to quickly change configuration values in multiple environments using the ```envgroup``` subcommands:
+### Change attributes in multiple environments 
 
 ```
-knife spork envgroup attribute set ENVIRONMENT ATTRIBUTE VALUE
-knife spork envgroup attribute unset ENVIRONMENT ATTRIBUTE
+knife spork environment attribute set ENVIRONMENT ATTRIBUTE VALUE
+knife spork environment attribute unset ENVIRONMENT ATTRIBUTE
 ```
 
-#### Change an attribute in a given list of environments
+###### Example 1: Pass a list of environments
 
 ```
-$ knife spork envgroup attribute set Environment1,Environment2 hello world
-Git: Pulling latest changes from /chef-repo/environments
+$ knife spork environment attribute set Environment1,Environment2 hello world
 Modifying Environment1
 Done modifying Environment1 at 2015-08-06 23:55:06 -0700
 Modifying Environment2
 Done modifying Environment2 at 2015-08-06 23:55:07 -0700
-Git add'ing /chef-repo/environments/.
-Git: Committing changes...
-Git: Pushing to master
 ```
 
-This will add the key ```hello``` and set it with the value of ```world``` in the override_attributes section of the environment json: 
+This will add the key ```hello``` and set it with the value of ```world``` in the override_attributes section of the Environment1 and Environment2: 
 
 ```json
 {
@@ -41,38 +33,25 @@ This will add the key ```hello``` and set it with the value of ```world``` in th
 }
 ```
 
-#### Set an attribute given the name of a group of environments
-
+###### Example 2: Pass the name of a group of environments as specified in the configuration file
 ```
-knife spork envgroup attribute set test hello world
-```
-
-The yaml config lets one group environments before hand and the envgroup feature can accept the name of the group instead. In the following example the "test" group consists of chef environments Environment1 and Environment2. By passing in this group name, the same end result as above can be achieved: 
-
-```
-$ knife spork envgroup attribute set test hello world
-Git: Pulling latest changes from /chef-repo/environments
+$ knife spork environment attribute set test hello world
 Modifying Environment1
 Done modifying Environment1 at 2015-08-06 23:55:06 -0700
 Modifying Environment2
 Done modifying Environment2 at 2015-08-06 23:55:07 -0700
-Git add'ing /chef-repo/environments/.
-Git: Committing changes...
-Git: Pushing to master
 ```
 
-#### Unsetting environment attributes
+### Unset environment attributes
+
+This is the opposite of ```environment attribute set``` subcommand. It removes an attribute from the environment
 
 ```bash
-$ knife spork envgroup attribute unset test hello
-Git: Pulling latest changes from /chef-repo/environments
+$ knife spork environment attribute unset test hello
 Modifying TestEnvironment4
 Done modifying TestEnvironment4 at 2015-08-16 13:36:48 -0700
 Modifying TestEnvironment5
 Done modifying TestEnvironment5 at 2015-08-16 13:36:48 -0700
-Git add'ing /chef-repo/environments/.
-Git: Committing changes...
-Git: Pushing to test
 ```
 
 Spork Info
