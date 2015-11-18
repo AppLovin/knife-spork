@@ -1,9 +1,9 @@
-require 'knife-spork/plugins/git'
 require 'octokit'
+require 'knife-spork/plugins/plugin'
 
 module KnifeSpork
   module Plugins
-    class Github < Git
+    class Github < Plugin
       name :github
         # g = Git.open('/tmp/hello')
         # g.branch('hello').checkout
