@@ -32,7 +32,20 @@ module KnifeSpork::Plugins
 
       context "when default options are used" do
         it "pushes changes to remote repo" do
-          git_plugin = Git.new( :config => AppConf.new,
+          Tempfile.open('config.yml') do |f|
+            f.write(<<-EOF)
+            plugins:
+              git:
+                auto_push: true
+            EOF
+
+            f.close
+
+            @config = AppConf.new
+            @config.load(f.path)
+          end
+
+          git_plugin = Git.new( :config => @config,
                                 :args => {  :attribute => 'some.attribute',
                                             :value => 'some_value',
                                             :environments => [ 'TestEnvironment' ]},

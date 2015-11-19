@@ -1,5 +1,4 @@
 require 'knife-spork/plugins/plugin'
-
 module KnifeSpork
   module Plugins
     class Git < Plugin
@@ -210,13 +209,13 @@ module KnifeSpork
         if ! auto_push_disabled? __method__
           g = git
 
-          branch =  begin 
-                      config.branch
-                    rescue NoMethodError 
-                      "attribute/#{@options[:args][:attribute]}"
-                    end 
-
-          g.branch(branch).checkout
+          git_branch =  if config.branch.nil?
+                          "attribute/#{@options[:args][:attribute]}"
+                        else
+                          config.branch
+                        end
+         
+          g.branch(git_branch).checkout
           g.add(environment_path)
 
           commit_msg = "Set #{@options[:args][:attribute]} to #{@options[:args][:value]} in #{@options[:args][:environments].join(",")}" 
@@ -227,7 +226,7 @@ module KnifeSpork
           end
 
           g.commit(commit_msg)
-          g.push("origin", branch, true)
+          g.push("origin", git_branch, true)
         end
       end
 
