@@ -5,13 +5,6 @@ module KnifeSpork
   module Plugins
     class Github < Plugin
       name :github
-        # g = Git.open('/tmp/hello')
-        # g.branch('hello').checkout
-        # g.add
-        # g.commit
-        # g.push("origin", "branch", true)
-
-        # github.pull_request
 
       def after_environment_attribute_set
         if config.enabled
