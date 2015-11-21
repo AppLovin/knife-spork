@@ -25,27 +25,32 @@ module KnifeSpork::Plugins
       end
     end
 
+
     describe "after_environment_attribute_set" do
       let(:mock_git) do
         double()
       end
 
+      let(:config) do
+        require 'json'
+
+        config = AppConf.new
+        config.from_hash(JSON.parse(<<-EOF)) 
+        {
+          "plugins": {
+            "git": {
+              "auto_push": true
+            }
+          }
+        }
+        EOF
+
+        config
+      end
+
       context "when default options are used" do
         it "pushes changes to remote repo" do
-          Tempfile.open('config.yml') do |f|
-            f.write(<<-EOF)
-            plugins:
-              git:
-                auto_push: true
-            EOF
-
-            f.close
-
-            @config = AppConf.new
-            @config.load(f.path)
-          end
-
-          git_plugin = Git.new( :config => @config,
+          git_plugin = Git.new( :config => config,
                                 :args => {  :attribute => 'some.attribute',
                                             :value => 'some_value',
                                             :environments => [ 'TestEnvironment' ]},
@@ -65,22 +70,9 @@ module KnifeSpork::Plugins
 
       context "when git branch is set" do
         it "pushes changes to remote repo" do
-          Tempfile.open('config.yml') do |f|
-            f.write(<<-EOF)
-            plugins:
-              git:
-                auto_push: true
-                branch: master
-            EOF
+          config.plugins.git['branch'] = 'master'
 
-            f.close
-
-            @config = AppConf.new
-            @config.load(f.path)
-          end
-
-
-          git_plugin = Git.new( :config => @config,
+          git_plugin = Git.new( :config => config,
                                 :args => {  :attribute => 'some.attribute',
                                             :value => 'some_value',
                                             :environments => [ 'TestEnvironment' ]},
