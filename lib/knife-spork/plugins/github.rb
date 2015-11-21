@@ -16,7 +16,7 @@ module KnifeSpork
                         else
                           "master"
                         end,
-                        git.branch.name,
+                        git.current_branch.name,
                         "Set #{@options[:args][:attribute]} to #{@options[:args][:value]}",
                         "" ]
 
