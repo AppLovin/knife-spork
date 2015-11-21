@@ -210,7 +210,7 @@ module KnifeSpork
           g = git
 
           git_branch =  if config.branch.nil?
-                          "attribute/#{@options[:args][:attribute]}"
+                          "attribute/#{@options[:args][:attribute]}_#{Time.now.getutc.to_i}"
                         else
                           config.branch
                         end
