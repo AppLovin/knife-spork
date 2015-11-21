@@ -38,12 +38,13 @@ module KnifeSpork::Plugins
     context "when executing after_environment_attribute_set" do
       it "creates pull request to master" do
         allow(github_plugin).to receive_message_chain(:git, :remote, :url => "git@github.com:owner/repo.git")
-        allow(github_plugin).to receive_message_chain(:git, :branch, :url => "git@github.com:owner/repo.git")
+        allow(github_plugin).to receive_message_chain(:git, :branch, :name => "attribute/hello")
         expect(::Octokit::Client).to receive(:new).with(:access_token => "abc123").and_return(github)
+
 
         pull_args = [ "owner/repo",
                       "test",
-                      "attribute/some.attribute",
+                      "attribute/hello",
                       "Set some.attribute to some.value",
                       "" ]
 
