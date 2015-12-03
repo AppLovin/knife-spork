@@ -21,8 +21,16 @@ module KnifeSpork
 
       group = @name_args.first
 
-      if spork_config.environment_groups[group].nil?
-        ui.error("Environment group #{group} not found.")
+      environments = if spork_config.environment_groups[group].nil?
+        passed_envs = group.split(",")
+        all_envs = spork_config.environment_groups.values.flatten
+        if ! (all_envs & passed_envs).empty?
+          passed_envs
+        else
+          ui.error("Environment group #{group} not found.")
+        end
+      else
+        spork_config.environment_groups[group]
       end
 
       run_plugins(:before_environment_attribute_unset)
@@ -32,7 +40,7 @@ module KnifeSpork
         :attribute => @name_args[1], 
         :value => @name_args[2] } 
 
-      spork_config.environment_groups[group].each do |env|
+      environments.each do |env|
         environment = load_environment_from_file(env)
 
         ui.msg "Modifying #{env}"
