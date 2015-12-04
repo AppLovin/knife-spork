@@ -5,7 +5,10 @@ module KnifeSpork
   describe SporkEnvironmentAttributeUnset do
     let(:spork_config) do
       AppConf.new().tap do |conf|
-        allow(conf).to receive(:environment_groups).and_return({ "test" => [ "TestEnvironment1", "TestEnvironment2" ] })
+        AppConf.new().tap do |environment_groups|
+          environment_groups.from_hash({ "test" => [ "TestEnvironment1", "TestEnvironment2" ] })
+          allow(conf).to receive(:environment_groups).and_return(environment_groups)
+        end
       end
     end
 

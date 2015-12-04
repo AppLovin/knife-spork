@@ -23,7 +23,7 @@ module KnifeSpork
 
       environments = if spork_config.environment_groups[group].nil?
         passed_envs = group.split(",")
-        all_envs = spork_config.environment_groups.values.flatten
+        all_envs = spork_config.environment_groups.to_hash.values.flatten
         if ! (all_envs & passed_envs).empty?
           passed_envs
         else
