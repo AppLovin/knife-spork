@@ -18,6 +18,7 @@ module KnifeSpork
       end
 
       if append and parent_hash.has_key? attr and parent_hash[attr].class == Array
+        to = [ to ] unless to.class == Array
         parent_hash[attr] = parent_hash[attr] + to
       else
         parent_hash[attr] = to

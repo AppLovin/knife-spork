@@ -55,6 +55,9 @@ module KnifeSpork
           "my_list" => [
             "hello", 
             "world"
+          ],
+          "my_list_hash" => [
+
           ]
         },
         "object" => 2,
@@ -103,6 +106,11 @@ module KnifeSpork
         some_list = "brown fox".split(" ")
         environment = Utils.hash_set("object1.my_list", some_list, environment, create_if_missing=true, append=true)
         expect(environment["object1"]["my_list"]).to eq(["hello", "world"] + some_list)
+      end
+
+      it "appends hash to list" do
+        environment = Utils.hash_set("object1.my_list_hash", {'a' => 'b'}, environment, true, true)
+        expect(environment["object1"]["my_list_hash"]).to eq([{ 'a' => 'b' }])
       end
 
       it "changes string to a list" do
