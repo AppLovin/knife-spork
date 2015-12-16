@@ -2,6 +2,7 @@ require 'chef/knife'
 require 'knife-spork/runner'
 require 'knife-spork/utils'
 require 'set'
+require 'json'
 
 module KnifeSpork
   class SporkEnvironmentAttributeSet < Chef::Knife
@@ -66,7 +67,7 @@ module KnifeSpork
 
       environments.each do |env|
         environment = load_environment_from_file(env)
-
+      
         create_if_missing = if config[:create_if_missing].nil?
                               false
                             else
@@ -111,19 +112,24 @@ module KnifeSpork
   
     def value
       value = @name_args[2]
-      if config.has_key? :force_string
-        value
-      elsif append? | /(.+,){1,}/.match(value)
-        value.split(",")
-      elsif value == "true"
-        true
-      elsif value =="false"
-        false
-      elsif value.is_a? Numeric
-        value.to_i 
-      else
-        value
-      end
+
+      begin
+        JSON.parse(value) 
+      rescue
+        if config.has_key? :force_string
+          value
+        elsif append? | /(.+,){1,}/.match(value)
+          value.split(",")
+        elsif value == "true"
+          true
+        elsif value =="false"
+          false
+        elsif value.is_a? Numeric
+          value.to_i 
+        else
+          value
+        end
+      end 
     end
 
     def override_attribute(attribute, value, environment, create_if_missing = false, append = false)
