@@ -221,7 +221,7 @@ module KnifeSpork
           git_branch(git_branch) 
           
           @options[:args][:environments].each do |e|
-            git_add(environment_path, e)
+            git_add(environment_path, "#{e}.json")
           end
 
           commit_msg = "Set #{@options[:args][:attribute]} to #{@options[:args][:value]} in #{@options[:args][:environments].join(",")}" 

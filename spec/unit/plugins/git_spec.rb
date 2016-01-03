@@ -61,7 +61,7 @@ module KnifeSpork::Plugins
                                 :environment_path => '/path/to/environments')
 
           expect(git_plugin).to receive(:git_branch).with("attribute/some.attribute_1")
-          expect(git_plugin).to receive(:git_add).with('/path/to/environments', 'TestEnvironment')
+          expect(git_plugin).to receive(:git_add).with('/path/to/environments', 'TestEnvironment.json')
           expect(git_plugin).to receive(:git_commit).with('/path/to/environments', 'Set some.attribute to some_value in TestEnvironment')
           expect(git_plugin).to receive(:git_push).with("attribute/some.attribute_1")
 
@@ -80,7 +80,7 @@ module KnifeSpork::Plugins
                                 :environment_path => '/path/to/environments')
 
           expect(git_plugin).to receive(:git_branch).with("master")
-          expect(git_plugin).to receive(:git_add).with('/path/to/environments', 'TestEnvironment')
+          expect(git_plugin).to receive(:git_add).with('/path/to/environments', 'TestEnvironment.json')
           expect(git_plugin).to receive(:git_commit).with('/path/to/environments', 'Set some.attribute to some_value in TestEnvironment')
           expect(git_plugin).to receive(:git_push).with("master")
 
