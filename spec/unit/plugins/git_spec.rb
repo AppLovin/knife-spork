@@ -60,13 +60,10 @@ module KnifeSpork::Plugins
                                             :environments => [ 'TestEnvironment' ]},
                                 :environment_path => '/path/to/environments')
 
-          allow(git_plugin).to receive(:git).and_return(mock_git)
-
-          expect(mock_git).to receive(:branch).with("attribute/some.attribute_1").ordered.and_return(mock_git)
-          expect(mock_git).to receive(:checkout).ordered
-          expect(mock_git).to receive(:add).with('/path/to/environments').ordered
-          expect(mock_git).to receive(:commit).with("Set some.attribute to some_value in TestEnvironment").ordered
-          expect(mock_git).to receive(:push).with("origin", "attribute/some.attribute_1", true).ordered
+          expect(git_plugin).to receive(:git_branch).with("attribute/some.attribute_1")
+          expect(git_plugin).to receive(:git_add).with('/path/to/environments', 'TestEnvironment')
+          expect(git_plugin).to receive(:git_commit).with('/path/to/environments', 'Set some.attribute to some_value in TestEnvironment')
+          expect(git_plugin).to receive(:git_push).with("attribute/some.attribute_1")
 
           git_plugin.after_environment_attribute_set
         end
@@ -82,13 +79,10 @@ module KnifeSpork::Plugins
                                             :environments => [ 'TestEnvironment' ]},
                                 :environment_path => '/path/to/environments')
 
-          allow(git_plugin).to receive(:git).and_return(mock_git)
-
-          expect(mock_git).to receive(:branch).with("master").ordered.and_return(mock_git)
-          expect(mock_git).to receive(:checkout).ordered
-          expect(mock_git).to receive(:add).with('/path/to/environments').ordered
-          expect(mock_git).to receive(:commit).with("Set some.attribute to some_value in TestEnvironment").ordered
-          expect(mock_git).to receive(:push).with("origin", "master", true).ordered
+          expect(git_plugin).to receive(:git_branch).with("master")
+          expect(git_plugin).to receive(:git_add).with('/path/to/environments', 'TestEnvironment')
+          expect(git_plugin).to receive(:git_commit).with('/path/to/environments', 'Set some.attribute to some_value in TestEnvironment')
+          expect(git_plugin).to receive(:git_push).with("master")
 
           git_plugin.after_environment_attribute_set
         end

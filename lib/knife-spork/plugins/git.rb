@@ -1,4 +1,5 @@
 require 'knife-spork/plugins/plugin'
+
 module KnifeSpork
   module Plugins
     class Git < Plugin
@@ -211,8 +212,6 @@ module KnifeSpork
 
       def after_environment_attribute_set
         if ! auto_push_disabled? __method__
-          g = git
-
           git_branch =  if config.branch.nil?
                           "attribute/#{@options[:args][:attribute]}_#{Time.now.getutc.to_i}"
                         else
@@ -220,7 +219,10 @@ module KnifeSpork
                         end
         
           git_branch(git_branch) 
-          g.add(environment_path)
+          
+          @options[:args][:environments].each do |e|
+            git_add(environment_path, e)
+          end
 
           commit_msg = "Set #{@options[:args][:attribute]} to #{@options[:args][:value]} in #{@options[:args][:environments].join(",")}" 
 
@@ -229,8 +231,8 @@ module KnifeSpork
             commit_msg = "{commit_msg} {asana}"
           end
 
-          g.commit(commit_msg)
-          g.push("origin", git_branch, true)
+          git_commit(environment_path, commit_msg)
+          git_push(git_branch)
         end
       end
 
@@ -398,7 +400,7 @@ module KnifeSpork
 
       def git_add(filepath,filename)
         if is_repo?(filepath)
-          ui.msg "Git add'ing #{filepath}/#{filename}"
+          ui.msg "Git add'ing #{filepath}/#{filename}" 
           output = IO.popen("cd #{filepath} && git add #{filename}")
           Process.wait
           exit_code = $?
