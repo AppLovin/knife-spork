@@ -205,6 +205,10 @@ module KnifeSpork
         end
       end
 
+      def git_branch(branch)
+        git.branch(branch).checkout
+      end
+
       def after_environment_attribute_set
         if ! auto_push_disabled? __method__
           g = git
@@ -214,8 +218,8 @@ module KnifeSpork
                         else
                           config.branch
                         end
-         
-          g.branch(git_branch).checkout
+        
+          git_branch(git_branch) 
           g.add(environment_path)
 
           commit_msg = "Set #{@options[:args][:attribute]} to #{@options[:args][:value]} in #{@options[:args][:environments].join(",")}" 
