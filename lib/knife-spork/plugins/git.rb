@@ -233,6 +233,14 @@ module KnifeSpork
 
           git_commit(environment_path, commit_msg)
           git_push(git_branch)
+
+          if ! config.github.nil?
+            begin
+              github_pull_request(commit_msg, git_branch)
+            rescue ArgumentError => e
+              ui.fatal e.message
+            end
+          end
         end
       end
 
@@ -364,7 +372,16 @@ module KnifeSpork
         end
       end
 
-      # In this case, a git pull will:
+      def github
+        safe_require 'octokit'
+        ::Octokit::Client.new(:access_token => config.github.token)
+      end
+
+      def github_pull_request(message, work_branch)
+        github.create_pull_request("#{/(?<=:).*(?=\.git)/.match(git.remote.url)[0]}", "master", work_branch, message, "")
+      end
+
+      # In this case, a git pull will
       #   - Stash local changes
       #   - Pull from the remote
       #   - Pop the stash

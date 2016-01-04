@@ -87,6 +87,39 @@ module KnifeSpork::Plugins
           git_plugin.after_environment_attribute_set
         end
       end
+
+      context "when github is enabled" do
+        it "creates pull request to master" do
+          config2 = AppConf.new
+          config2.from_hash(JSON.parse(<<-EOF))
+          {
+            "plugins": {
+              "git": {
+                "auto_push": true,
+                "github": {
+                  "enabled": true,
+                  "token": "abc123"
+                }
+              }
+            }
+          }
+          EOF
+
+          git_plugin = Git.new( :config => config2,
+                                :args => {  :attribute => 'some.attribute',
+                                            :value => 'some_value',
+                                            :environments => [ 'TestEnvironment' ]},
+                                :environment_path => '/path/to/environments')
+
+          expect(git_plugin).to receive(:git_branch).with("attribute/some.attribute_1")
+          expect(git_plugin).to receive(:git_add).with('/path/to/environments', 'TestEnvironment.json')
+          expect(git_plugin).to receive(:git_commit).with('/path/to/environments', 'Set some.attribute to some_value in TestEnvironment')
+          expect(git_plugin).to receive(:git_push).with("attribute/some.attribute_1")
+          expect(git_plugin).to receive(:github_pull_request).with('Set some.attribute to some_value in TestEnvironment', 'attribute/some.attribute_1')
+
+          git_plugin.after_environment_attribute_set
+        end
+      end
     end
   end
 end
