@@ -95,20 +95,6 @@ module KnifeSpork
 
       run_plugins(:after_environment_attribute_set)
     end
-
-    def append?
-      is_array = if config.has_key? :append
-        begin 
-          @name_args[2].split(",")
-        rescue NoMethodError
-          ui.error("#{value} is not array of values. HINT: Place commas delimiting each value")
-          exit 1
-        end
-        true
-      else 
-        false
-      end
-    end
   
     def value
       value = @name_args[2]
@@ -118,8 +104,6 @@ module KnifeSpork
       rescue
         if config.has_key? :force_string
           value
-        elsif append? | /(.+,){1,}/.match(value)
-          value.split(",")
         elsif value == "true"
           true
         elsif value =="false"
