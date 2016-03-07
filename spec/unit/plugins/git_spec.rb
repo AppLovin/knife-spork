@@ -2,6 +2,7 @@ require 'knife-spork/plugins/git'
 require 'app_conf'
 require 'tempfile'
 require 'git'
+require 'octokit'
 
 module KnifeSpork::Plugins
   describe Git do
@@ -26,6 +27,69 @@ module KnifeSpork::Plugins
       end
     end
 
+    describe "create_github_pull_request" do
+      let(:git_plugin) do
+        g = Git.new(:config => AppConf.new)
+        
+        allow(g).to receive_message_chain(:config, :github, :token => 'abc123')
+
+        g
+      end
+
+      after(:each) do
+        git_plugin.github_pull_request('target_branch', 'some_commit')
+      end
+
+      context 'when pull request exists' do
+        it 'does not create a pull request' do
+          allow(git_plugin).to receive(:pull_requested?).and_return(true)
+
+          expect_any_instance_of(::Octokit::Client).to_not receive(:create_pull_request)
+        end
+      end
+
+      context 'when pull request does not exist' do
+        it 'creates a pull request' do
+          allow(git_plugin).to receive(:pull_requested?).and_return(false)
+          allow(git_plugin).to receive_message_chain(:git, :remote, :url => 'git@github.com:some_repo.git')
+
+          allow_any_instance_of(::Octokit::Client).to receive(:create_pull_request)
+
+          expect_any_instance_of(::Octokit::Client).to receive(:create_pull_request)
+        end
+      end
+    end
+
+    describe 'pull_requested?' do
+      let(:git_plugin) do
+        Git.new(:config => AppConf.new)
+      end
+
+      let(:pull_requests) do
+        [
+          {:head => {:ref => 'some_branch'}, :base => { :ref => 'master'}},
+          {:head => {:ref => 'attribute/hello'}, :base => { :ref => 'master'}}
+        ]
+      end
+      
+      context 'when there is a pull request' do
+        it 'returns true' do
+          expect(git_plugin).to receive_message_chain(:github, :pull_requests => pull_requests ).with('Owner/Repo', :state => 'open')
+          expect(git_plugin).to receive_message_chain(:git, :remote, :url => 'git@github.com:Owner/Repo.git')
+
+          expect(git_plugin.pull_requested?('attribute/hello', 'master')).to eq(true)
+        end
+      end
+
+      context 'when there is no pull request' do
+        it 'returns false' do
+          expect(git_plugin).to receive_message_chain(:github, :pull_requests => pull_requests ).with('Owner/Repo', :state => 'open')
+          expect(git_plugin).to receive_message_chain(:git, :remote, :url => 'git@github.com:Owner/Repo.git')
+
+          expect(git_plugin.pull_requested?('some_other_branch', 'master')).to eq(false)
+        end
+      end
+    end
 
     describe "after_environment_attribute_set" do
       let(:config) do

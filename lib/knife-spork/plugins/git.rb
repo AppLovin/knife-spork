@@ -362,6 +362,18 @@ module KnifeSpork
         end         
       end
 
+      def github_pull_request(message, work_branch)
+        if ! pull_requested?(work_branch, 'master')
+          github.create_pull_request("#{/(?<=:).*(?=\.git)/.match(git.remote.url)[0]}", "master", work_branch, message, "")
+        end
+      end
+
+      def pull_requested?(head, base)
+        github.pull_requests("#{/(?<=:).*(?=\.git)/.match(git.remote.url)[0]}", :state => 'open').any? do |pull|
+          pull[:head][:ref] == head and pull[:base][:ref] == base
+        end
+      end
+
       private
       def git
         safe_require 'git'
@@ -379,10 +391,6 @@ module KnifeSpork
       def github
         safe_require 'octokit'
         ::Octokit::Client.new(:access_token => config.github.token)
-      end
-
-      def github_pull_request(message, work_branch)
-        github.create_pull_request("#{/(?<=:).*(?=\.git)/.match(git.remote.url)[0]}", "master", work_branch, message, "")
       end
 
       # In this case, a git pull will
