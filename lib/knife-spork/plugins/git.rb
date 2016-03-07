@@ -201,9 +201,6 @@ module KnifeSpork
       end
 
       def before_environment_attribute_set
-        if ! auto_push_disabled? __method__
-          git_pull(environment_path)
-        end
       end
 
       def git_branch(branch)
@@ -216,7 +213,9 @@ module KnifeSpork
           attribute = args[:attribute]
           value = args[:value]
 
-          git_branch =  if config.branch.nil?
+          git_branch =  if ! args[:branch].nil?
+            args[:branch]
+          elsif config.branch.nil?
             "attribute/#{attribute}"
           else
             config.branch

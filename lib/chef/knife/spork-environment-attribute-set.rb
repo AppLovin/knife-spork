@@ -28,6 +28,10 @@ module KnifeSpork
            :long => '--no_upload',
            :description => 'whether or not to upload environment file'
 
+    option :branch,
+           :long => '--branch BRANCH',
+           :description => 'name of the branch to fork'
+
     def run 
       self.config = Chef::Config.merge!(config)
 
@@ -58,7 +62,8 @@ module KnifeSpork
         :environments => [],
         :attribute => @name_args[1], 
         :value => @name_args[2], 
-        :remarks => config[:remarks].nil? == false
+        :remarks => config[:remarks].nil? == false,
+        :branch => config[:branch]
         } 
 
       environments.each do |env|

@@ -105,6 +105,14 @@ module KnifeSpork::Plugins
         config
       end
 
+      let(:args) do
+        {
+          :environments => ['TestEnvironment'],
+          :attribute => 'hello',
+          :value => 'world'
+        } 
+      end
+
       let(:git_plugin) do
         g = Git.new(:config => config)
 
@@ -115,11 +123,7 @@ module KnifeSpork::Plugins
         allow(g).to receive(:git_push)
         allow(g).to receive(:github_pull_request)
 
-        allow(g).to receive(:args).and_return({
-          :environments => ['TestEnvironment'],
-          :attribute => 'hello',
-          :value => 'world'
-        })
+        allow(g).to receive(:args).and_return(args)
 
         g
       end
@@ -143,6 +147,13 @@ module KnifeSpork::Plugins
 
         it 'pushes branch to remote' do
           expect(git_plugin).to receive(:git_push).with 'attribute/hello'
+        end
+      end
+
+      context 'when git branch is passed from command line' do
+        it 'uses current branch' do
+          args[:branch] = 'attribute/branch'
+          expect(git_plugin).to receive(:git_branch).with 'attribute/branch'
         end
       end
 
