@@ -21,103 +21,81 @@ module KnifeSpork::Plugins
         config.load(f.path)
 
         git_plugin = Git.new(:config => config)
+
         expect(git_plugin.auto_push_disabled?(:after_envgroup_attribute_set)).to eq true
       end
     end
 
 
     describe "after_environment_attribute_set" do
-      let(:mock_git) do
-        double()
-      end
-
       let(:config) do
-        require 'json'
-
         config = AppConf.new
-        config.from_hash(JSON.parse(<<-EOF)) 
-        {
-          "plugins": {
-            "git": {
-              "auto_push": true
+        config.from_hash({
+          'plugins' => {
+            'git' => {
+              'enabled' => true
             }
           }
-        }
-        EOF
+        })
 
         config
       end
 
-      before(:each) do 
-        allow(Time).to receive_message_chain(:now, :getutc, :to_i => 1)
+      let(:git_plugin) do
+        g = Git.new(:config => config)
+
+        allow(g).to receive(:environment_path).and_return '/path/to/environments'
+        allow(g).to receive(:git_branch)
+        allow(g).to receive(:git_add)
+        allow(g).to receive(:git_commit)
+        allow(g).to receive(:git_push)
+        allow(g).to receive(:github_pull_request)
+
+        allow(g).to receive(:args).and_return({
+          :environments => ['TestEnvironment'],
+          :attribute => 'hello',
+          :value => 'world'
+        })
+
+        g
+      end
+
+      after(:each) do
+        git_plugin.after_environment_attribute_set
       end
 
       context "when default options are used" do
-        it "pushes changes to remote repo" do
-          git_plugin = Git.new( :config => config,
-                                :args => {  :attribute => 'some.attribute',
-                                            :value => 'some_value',
-                                            :environments => [ 'TestEnvironment' ]},
-                                :environment_path => '/path/to/environments')
+        it 'creates a new branch' do
+          expect(git_plugin).to receive(:git_branch).with 'attribute/hello'
+        end
 
-          expect(git_plugin).to receive(:git_branch).with("attribute/some.attribute_1")
-          expect(git_plugin).to receive(:git_add).with('/path/to/environments', 'TestEnvironment.json')
-          expect(git_plugin).to receive(:git_commit).with('/path/to/environments', 'Set some.attribute to some_value in TestEnvironment')
-          expect(git_plugin).to receive(:git_push).with("attribute/some.attribute_1")
+        it 'adds environment modified' do
+          expect(git_plugin).to receive(:git_add).with '/path/to/environments', 'TestEnvironment.json'
+        end
 
-          git_plugin.after_environment_attribute_set
+        it 'commits changes to environment files' do
+          expect(git_plugin).to receive(:git_commit).with '/path/to/environments', 'Set hello to world in TestEnvironment'
+        end 
+
+        it 'pushes branch to remote' do
+          expect(git_plugin).to receive(:git_push).with 'attribute/hello'
         end
       end
 
-      context "when git branch is set" do
-        it "pushes changes to remote repo" do
+      context 'when git branch is set' do
+        it 'pushes changes to remote repo' do
           config.plugins.git['branch'] = 'master'
 
-          git_plugin = Git.new( :config => config,
-                                :args => {  :attribute => 'some.attribute',
-                                            :value => 'some_value',
-                                            :environments => [ 'TestEnvironment' ]},
-                                :environment_path => '/path/to/environments')
-
-          expect(git_plugin).to receive(:git_branch).with("master")
-          expect(git_plugin).to receive(:git_add).with('/path/to/environments', 'TestEnvironment.json')
-          expect(git_plugin).to receive(:git_commit).with('/path/to/environments', 'Set some.attribute to some_value in TestEnvironment')
-          expect(git_plugin).to receive(:git_push).with("master")
-
-          git_plugin.after_environment_attribute_set
+          expect(git_plugin).to receive(:git_branch).with('master')
+          expect(git_plugin).to receive(:git_push).with 'master'
         end
       end
 
       context "when github is enabled" do
         it "creates pull request to master" do
-          config2 = AppConf.new
-          config2.from_hash(JSON.parse(<<-EOF))
-          {
-            "plugins": {
-              "git": {
-                "auto_push": true,
-                "github": {
-                  "enabled": true,
-                  "token": "abc123"
-                }
-              }
-            }
-          }
-          EOF
+          config.plugins.git['github'] = {}
 
-          git_plugin = Git.new( :config => config2,
-                                :args => {  :attribute => 'some.attribute',
-                                            :value => 'some_value',
-                                            :environments => [ 'TestEnvironment' ]},
-                                :environment_path => '/path/to/environments')
-
-          expect(git_plugin).to receive(:git_branch).with("attribute/some.attribute_1")
-          expect(git_plugin).to receive(:git_add).with('/path/to/environments', 'TestEnvironment.json')
-          expect(git_plugin).to receive(:git_commit).with('/path/to/environments', 'Set some.attribute to some_value in TestEnvironment')
-          expect(git_plugin).to receive(:git_push).with("attribute/some.attribute_1")
-          expect(git_plugin).to receive(:github_pull_request).with('Set some.attribute to some_value in TestEnvironment', 'attribute/some.attribute_1')
-
-          git_plugin.after_environment_attribute_set
+          expect(git_plugin).to receive(:github_pull_request).with('Set hello to world in TestEnvironment', 'attribute/hello')
         end
       end
     end

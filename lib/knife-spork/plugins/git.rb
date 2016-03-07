@@ -212,21 +212,25 @@ module KnifeSpork
 
       def after_environment_attribute_set
         if ! auto_push_disabled? __method__
+          environments = args[:environments]
+          attribute = args[:attribute]
+          value = args[:value]
+
           git_branch =  if config.branch.nil?
-                          "attribute/#{@options[:args][:attribute]}_#{Time.now.getutc.to_i}"
-                        else
-                          config.branch
-                        end
-        
+            "attribute/#{attribute}"
+          else
+            config.branch
+          end
+           
           git_branch(git_branch) 
           
-          @options[:args][:environments].each do |e|
+          environments.each do |e|
             git_add(environment_path, "#{e}.json")
           end
 
-          commit_msg = "Set #{@options[:args][:attribute]} to #{@options[:args][:value]} in #{@options[:args][:environments].join(",")}" 
+          commit_msg = "Set #{attribute} to #{value} in #{environments.join(",")}" 
 
-          if @options[:args][:remarks]
+          unless args.fetch('remarks', nil).nil?
             asana = ui.ask_question("Enter commit message: ", :default_value => "")
             commit_msg = "{commit_msg} {asana}"
           end
@@ -234,7 +238,7 @@ module KnifeSpork
           git_commit(environment_path, commit_msg)
           git_push(git_branch)
 
-          if ! config.github.nil?
+          unless config.github.nil?
             begin
               github_pull_request(commit_msg, git_branch)
             rescue ArgumentError => e

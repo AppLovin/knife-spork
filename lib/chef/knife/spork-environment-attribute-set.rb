@@ -20,10 +20,6 @@ module KnifeSpork
            :long => '--force_string',
            :description => 'Force value to a string'
 
-    option :append,
-           :long => '--append',
-           :description => 'treat value as an array'
-
     option :remarks,
            :long => '--remarks',
            :description => 'append to git commit message'
@@ -76,7 +72,7 @@ module KnifeSpork
 
 
         ui.msg "Modifying #{env}"
-        modified = override_attribute(@name_args[1], value, environment, create_if_missing = create_if_missing, append = append? )
+        modified = override_attribute(@name_args[1], value, environment, create_if_missing = create_if_missing )
 
         if modified 
           new_environment_json = pretty_print_json(environment.to_hash)
