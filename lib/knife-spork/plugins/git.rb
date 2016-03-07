@@ -227,7 +227,11 @@ module KnifeSpork
             git_add(environment_path, "#{e}.json")
           end
 
-          commit_msg = "Set #{attribute} to #{value} in #{environments.join(",")}" 
+          commit_msg = if args.fetch(:commit_message, nil).nil? 
+            "Set #{attribute} to #{value} in #{environments.join(",")}" 
+          else
+            args.fetch(:commit_message)
+          end
 
           unless args.fetch('remarks', nil).nil?
             asana = ui.ask_question("Enter commit message: ", :default_value => "")

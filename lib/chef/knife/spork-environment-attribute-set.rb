@@ -32,6 +32,10 @@ module KnifeSpork
            :long => '--branch BRANCH',
            :description => 'name of the branch to fork'
 
+    option :commit_message,
+           :long => '--commit_message MSG',
+           :description => 'commit message'
+
     def run 
       self.config = Chef::Config.merge!(config)
 
@@ -63,7 +67,8 @@ module KnifeSpork
         :attribute => @name_args[1], 
         :value => @name_args[2], 
         :remarks => config[:remarks].nil? == false,
-        :branch => config[:branch]
+        :branch => config[:branch],
+        :commit_message => config[:commit_message]
         } 
 
       environments.each do |env|
