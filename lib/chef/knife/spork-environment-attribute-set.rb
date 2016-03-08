@@ -66,7 +66,7 @@ module KnifeSpork
         :environments => [],
         :attribute => @name_args[1], 
         :value => @name_args[2], 
-        :remarks => config[:remarks].nil? == false,
+        :remarks => config[:remarks],
         :branch => config[:branch],
         :commit_message => config[:commit_message]
         } 

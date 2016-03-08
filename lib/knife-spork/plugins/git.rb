@@ -233,9 +233,9 @@ module KnifeSpork
             args.fetch(:commit_message)
           end
 
-          unless args.fetch('remarks', nil).nil?
+          unless args.fetch(:remarks, nil).nil?
             asana = ui.ask_question("Enter commit message: ", :default_value => "")
-            commit_msg = "{commit_msg} {asana}"
+            commit_msg = "#{commit_msg} #{asana}"
           end
 
           git_commit(environment_path, commit_msg)
