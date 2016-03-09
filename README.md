@@ -2,7 +2,7 @@ KnifeArchon
 ===========
 Power Overwhelming! KnifeArchon is a tool for manipulating infrastructure managed by chef.
 
-It is a modified version of the original [knife-spork project](https://github.com/jonlives/knife-spork) by [@jonlives](https://github.com/jonlives) at Etsy. This fork adds the workflows I have used at AppLovin.
+It is a modified version of the original [knife-spork project](https://github.com/jonlives/knife-spork) by [@jonlives](https://github.com/jonlives) at Etsy.
 
 Usage
 ------------
