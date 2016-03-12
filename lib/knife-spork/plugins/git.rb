@@ -204,7 +204,9 @@ module KnifeSpork
       end
 
       def git_branch(branch)
-        git.branch(branch).checkout
+        unless git.branch == branch
+          git.branch(branch).checkout
+        end
       end
 
       def after_environment_attribute_set
