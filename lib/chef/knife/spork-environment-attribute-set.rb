@@ -61,11 +61,17 @@ module KnifeSpork
       end
 
       run_plugins(:before_environment_attribute_set)
+
+      value = begin
+                JSON.load(@name_args[2].to_s)
+              rescue JSON::ParserError
+                JSON.load("\"#{@name_args[2]}\"")
+              end
       
       @args = { 
         :environments => [],
         :attribute => @name_args[1], 
-        :value => @name_args[2], 
+        :value => value, 
         :remarks => config[:remarks],
         :branch => config[:branch],
         :commit_message => config[:commit_message]
@@ -102,26 +108,6 @@ module KnifeSpork
       run_plugins(:after_environment_attribute_set)
     end
   
-    def value
-      value = @name_args[2]
-
-      begin
-        JSON.parse(value) 
-      rescue
-        if config.has_key? :force_string
-          value
-        elsif value == "true"
-          true
-        elsif value =="false"
-          false
-        elsif value.is_a? Numeric
-          value.to_i 
-        else
-          value
-        end
-      end 
-    end
-
     def override_attribute(attribute, value, environment, create_if_missing = false, append = false)
         old_hash = environment.override_attributes.hash
         environment.override_attributes = Utils.hash_set(attribute, value, environment.override_attributes, 
