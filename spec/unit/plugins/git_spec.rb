@@ -91,6 +91,67 @@ module KnifeSpork::Plugins
       end
     end
 
+    describe 'before_environment_attribute_set' do
+      let(:config) do
+        config = AppConf.new
+        config.from_hash({
+          'plugins' => {
+            'git' => {
+              'enabled' => true
+            }
+          }
+        })
+
+        config
+      end
+
+      let(:args) do
+        {
+          :environments => ['TestEnvironment'],
+          :attribute => 'hello',
+          :value => 'world'
+        } 
+      end
+
+      let(:git_plugin) do
+        g = Git.new(:config => config)
+
+        allow(g).to receive(:environment_path).and_return '/path/to/environments'
+        allow(g).to receive(:git_branch)
+        allow(g).to receive(:git_add)
+        allow(g).to receive(:git_commit)
+        allow(g).to receive(:git_push)
+        allow(g).to receive(:github_pull_request)
+
+        allow(g).to receive(:args).and_return(args)
+
+        g
+      end
+
+      after(:each) do
+        git_plugin.before_environment_attribute_set
+      end
+
+      it 'creates a new branch' do
+        expect(git_plugin).to receive(:git_branch).with 'attribute/hello'
+      end
+
+      context 'when git branch is passed from command line' do
+        it 'uses current branch' do
+          args[:branch] = 'attribute/branch'
+          expect(git_plugin).to receive(:git_branch).with 'attribute/branch'
+        end
+      end
+
+      context 'when git branch is set' do
+        it 'pushes changes to remote repo' do
+          config.plugins.git['branch'] = 'master'
+
+          expect(git_plugin).to receive(:git_branch).with('master')
+        end
+      end
+    end
+
     describe "after_environment_attribute_set" do
       let(:config) do
         config = AppConf.new
@@ -133,10 +194,6 @@ module KnifeSpork::Plugins
       end
 
       context "when default options are used" do
-        it 'creates a new branch' do
-          expect(git_plugin).to receive(:git_branch).with 'attribute/hello'
-        end
-
         it 'adds environment modified' do
           expect(git_plugin).to receive(:git_add).with '/path/to/environments', 'TestEnvironment.json'
         end
@@ -150,18 +207,10 @@ module KnifeSpork::Plugins
         end
       end
 
-      context 'when git branch is passed from command line' do
-        it 'uses current branch' do
-          args[:branch] = 'attribute/branch'
-          expect(git_plugin).to receive(:git_branch).with 'attribute/branch'
-        end
-      end
-
       context 'when git branch is set' do
         it 'pushes changes to remote repo' do
           config.plugins.git['branch'] = 'master'
 
-          expect(git_plugin).to receive(:git_branch).with('master')
           expect(git_plugin).to receive(:git_push).with 'master'
         end
       end

@@ -201,6 +201,8 @@ module KnifeSpork
       end
 
       def before_environment_attribute_set
+        git_branch('master')
+        git_branch(branch) 
       end
 
       def git_branch(branch)
@@ -214,16 +216,6 @@ module KnifeSpork
           environments = args[:environments]
           attribute = args[:attribute]
           value = args[:value]
-
-          git_branch =  if ! args[:branch].nil?
-            args[:branch]
-          elsif config.branch.nil?
-            "attribute/#{attribute}"
-          else
-            config.branch
-          end
-           
-          git_branch(git_branch) 
           
           environments.each do |e|
             git_add(environment_path, "#{e}.json")
@@ -241,11 +233,11 @@ module KnifeSpork
           end
 
           git_commit(environment_path, commit_msg)
-          git_push(git_branch)
+          git_push(branch)
 
           unless config.github.nil?
             begin
-              github_pull_request(commit_msg, git_branch)
+              github_pull_request(commit_msg, branch)
             rescue ArgumentError => e
               ui.fatal e.message
             end
@@ -532,7 +524,7 @@ module KnifeSpork
       end
 
       def branch
-        config.branch || 'master'
+        config.branch || args[:branch] || "attribute/#{args[:attribute]}" || 'master'
       end
 
       def tag_name
