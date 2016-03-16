@@ -60,14 +60,12 @@ module KnifeSpork
         exit 2
       end
 
-      run_plugins(:before_environment_attribute_set)
-
       value = begin
                 JSON.load(@name_args[2].to_s)
               rescue JSON::ParserError
                 JSON.load("\"#{@name_args[2]}\"")
               end
-      
+
       @args = { 
         :environments => [],
         :attribute => @name_args[1], 
@@ -76,6 +74,8 @@ module KnifeSpork
         :branch => config[:branch],
         :commit_message => config[:commit_message]
         } 
+
+      run_plugins(:before_environment_attribute_set)
 
       environments.each do |env|
         environment = load_environment_from_file(env)
