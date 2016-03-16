@@ -221,7 +221,9 @@ module KnifeSpork
             git_add(environment_path, "#{e}.json")
           end
 
-          commit_msg = if args.fetch(:commit_message, nil).nil? 
+          commit_msg = if value.class == Hash
+            "Updated #{attribute} in #{environments.join(",")}"
+          elsif args.fetch(:commit_message, nil).nil? 
             "Set #{attribute} to #{value} in #{environments.join(",")}" 
           else
             args.fetch(:commit_message)
