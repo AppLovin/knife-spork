@@ -1,25 +1,38 @@
 require 'knife-spork/runner'
-require 'chef/knife/spork-bump'
+
+class Foo; end
 
 module KnifeSpork
-  describe Runner do
-    it 'creates new instance of AppConf for a config of higher precendence' do
+  module Runner 
+    describe 'spork_config' do
+      before(:each) do 
+        Foo.send(:include, KnifeSpork::Runner) 
+      end
+      
+      let(:command) do 
+        Foo.new.tap do |i| 
+        @config1 = Tempfile.new('spork-config1.yml')
+        @config1.write(<<-EOF)
+plugins:
+  some: value
+        EOF
+        @config1.close
 
-      spork_config = File.join([ File.expand_path(File.dirname(__FILE__)), "fixtures/config/spork-config.yml" ])
+        @config2 = Tempfile.new('spork-config2.yml')
+        @config2.write(<<-EOF)
+plugins:
+  hello: world
+        EOF
+        @config2.close
 
-      command = SporkBump.new
-      command.class.send(:include, Runner)
+          allow(i).to receive(:load_paths).and_return([@config1.path, @config2.path])
+        end
+      end
 
-      allow(command).to receive(:cookbook_path).and_return(File.expand_path("."))
-      allow(command).to receive(:load_paths).and_return([ spork_config, spork_config ])
-
-      mock_conf = double()
-      allow(mock_conf).to receive(:load)
-
-      expect(AppConf).to receive(:new).exactly(3).times.and_return(mock_conf)
-
-      command.spork_config
-
+      it 'combines configurations' do
+        expect(command.spork_config.plugins.hello).to eq('world')
+        expect(command.spork_config.plugins.some).to eq('value')
+      end
     end
   end
 end

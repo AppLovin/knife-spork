@@ -20,7 +20,6 @@ module KnifeSpork
         @spork_config = AppConf.new
         load_paths.each do |load_path|
           if File.exists?(load_path)
-            @spork_config = AppConf.new
             @spork_config.load(load_path)
           end
         end
