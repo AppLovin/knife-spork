@@ -7,6 +7,10 @@ module KnifeSpork
 
       def perform; end
 
+      def before_omni
+        git_branch('master')
+      end
+
       def auto_push_disabled?(method)
         begin
           config.auto_push.disabled.include? method.to_s
