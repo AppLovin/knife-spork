@@ -206,6 +206,7 @@ module KnifeSpork
       end
 
       def git_branch(branch)
+        ui.msg "Git checkout #{branch}"
         unless git.branch == branch
           git.branch(branch).checkout
         end
