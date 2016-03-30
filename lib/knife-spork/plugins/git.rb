@@ -531,7 +531,11 @@ module KnifeSpork
       end
 
       def branch
-        config.branch || args[:branch] || "attribute/#{args[:attribute]}" || 'master'
+        if args[:attribute]
+          "attribute/#{args[:attribute]}"
+        else
+          args[:branch] || config.branch || 'master'
+        end
       end
 
       def tag_name
