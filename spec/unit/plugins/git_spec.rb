@@ -136,13 +136,6 @@ module KnifeSpork::Plugins
         expect(git_plugin).to receive(:git_branch).with 'attribute/hello'
       end
 
-      context 'when git branch is passed from command line' do
-        it 'uses current branch' do
-          args[:branch] = 'attribute/branch'
-          expect(git_plugin).to receive(:git_branch).with 'attribute/branch'
-        end
-      end
-
       context 'when git branch is set' do
         it 'pushes changes to remote repo' do
           config.plugins.git['branch'] = 'master'
@@ -183,7 +176,6 @@ module KnifeSpork::Plugins
         allow(g).to receive(:git_commit)
         allow(g).to receive(:git_push)
         allow(g).to receive(:github_pull_request)
-
         allow(g).to receive(:args).and_return(args)
 
         g
@@ -204,14 +196,6 @@ module KnifeSpork::Plugins
 
         it 'pushes branch to remote' do
           expect(git_plugin).to receive(:git_push).with 'attribute/hello'
-        end
-      end
-
-      context 'when git branch is set' do
-        it 'pushes changes to remote repo' do
-          config.plugins.git['branch'] = 'master'
-
-          expect(git_plugin).to receive(:git_push).with 'master'
         end
       end
 
