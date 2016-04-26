@@ -6,34 +6,50 @@ require 'octokit'
 
 module KnifeSpork::Plugins
   describe Git do
-    it "checks if hook is allowed to auto_push" do
-      Tempfile.open('config.yml') do |f|
-        f.write(<<-EOF)
-        plugins:
-          git:
-            auto_push:
-              disabled:
-                - after_envgroup_attribute_set
-        EOF
+    let(:args) do
+      {
+        :environments => ['TestEnvironment'],
+        :attribute => 'hello',
+        :value => 'world'
+      } 
+    end
 
-        f.close
+    let(:config) do
+      config = AppConf.new
+      config.from_hash({
+        'plugins' => {
+          'git' => {
+            'enabled' => true,
+            'auto_push' => {
+              'disabled' => [
+                'after_envgroup_attribute_set' 
+              ]
+            }
+          }
+        }
+      })
 
-        config = AppConf.new
-        config.load(f.path)
+    end
 
-        git_plugin = Git.new(:config => config)
-
-        expect(git_plugin.auto_push_disabled?(:after_envgroup_attribute_set)).to eq true
+    let(:git_plugin) do
+      Git.new(:config => config).tap do |g|
+        allow(g).to receive(:environment_path).and_return '/path/to/environments'
+        allow(g).to receive(:git_branch)
+        allow(g).to receive(:git_add)
+        allow(g).to receive(:git_commit)
+        allow(g).to receive(:git_push)
+        allow(g).to receive(:github_pull_request)
+        allow(g).to receive(:args).and_return(args)
       end
     end
 
-    describe "create_github_pull_request" do
-      let(:git_plugin) do
-        g = Git.new(:config => AppConf.new)
-        
-        allow(g).to receive_message_chain(:config, :github, :token => 'abc123')
+    it "checks if hook is allowed to auto_push" do
+      expect(git_plugin.auto_push_disabled?(:after_envgroup_attribute_set)).to eq true
+    end
 
-        g
+    describe "create_github_pull_request" do
+      before(:each) do
+        allow(git_plugin).to receive_message_chain(:config, :github, :token => 'abc123')
       end
 
       after(:each) do
@@ -52,19 +68,13 @@ module KnifeSpork::Plugins
         it 'creates a pull request' do
           allow(git_plugin).to receive(:pull_requested?).and_return(false)
           allow(git_plugin).to receive_message_chain(:git, :remote, :url => 'git@github.com:some_repo.git')
-
-          allow_any_instance_of(::Octokit::Client).to receive(:create_pull_request)
-
+          allow(git_plugin).to receive(:github_pull_request).and_call_original
           expect_any_instance_of(::Octokit::Client).to receive(:create_pull_request)
         end
       end
     end
 
     describe 'pull_requested?' do
-      let(:git_plugin) do
-        Git.new(:config => AppConf.new)
-      end
-
       let(:pull_requests) do
         [
           {:head => {:ref => 'some_branch'}, :base => { :ref => 'master'}},
@@ -92,42 +102,6 @@ module KnifeSpork::Plugins
     end
 
     describe 'before_environment_attribute_set' do
-      let(:config) do
-        config = AppConf.new
-        config.from_hash({
-          'plugins' => {
-            'git' => {
-              'enabled' => true
-            }
-          }
-        })
-
-        config
-      end
-
-      let(:args) do
-        {
-          :environments => ['TestEnvironment'],
-          :attribute => 'hello',
-          :value => 'world'
-        } 
-      end
-
-      let(:git_plugin) do
-        g = Git.new(:config => config)
-
-        allow(g).to receive(:environment_path).and_return '/path/to/environments'
-        allow(g).to receive(:git_branch)
-        allow(g).to receive(:git_add)
-        allow(g).to receive(:git_commit)
-        allow(g).to receive(:git_push)
-        allow(g).to receive(:github_pull_request)
-
-        allow(g).to receive(:args).and_return(args)
-
-        g
-      end
-
       after(:each) do
         git_plugin.before_environment_attribute_set
       end
@@ -146,39 +120,8 @@ module KnifeSpork::Plugins
     end
 
     describe "after_environment_attribute_set" do
-      let(:config) do
-        config = AppConf.new
-        config.from_hash({
-          'plugins' => {
-            'git' => {
-              'enabled' => true
-            }
-          }
-        })
-
-        config
-      end
-
-      let(:args) do
-        {
-          :environments => ['TestEnvironment'],
-          :attribute => 'hello',
-          :value => 'world'
-        } 
-      end
-
-      let(:git_plugin) do
-        g = Git.new(:config => config)
-
-        allow(g).to receive(:environment_path).and_return '/path/to/environments'
-        allow(g).to receive(:git_branch)
-        allow(g).to receive(:git_add)
-        allow(g).to receive(:git_commit)
-        allow(g).to receive(:git_push)
-        allow(g).to receive(:github_pull_request)
-        allow(g).to receive(:args).and_return(args)
-
-        g
+      before(:each) do
+        allow(git_plugin).to receive(:auto_push_disabled?).and_return(false)
       end
 
       after(:each) do
