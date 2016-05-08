@@ -6,14 +6,6 @@ require 'octokit'
 
 module KnifeSpork::Plugins
   describe Git do
-    let(:args) do
-      {
-        :environments => ['TestEnvironment'],
-        :attribute => 'hello',
-        :value => 'world'
-      } 
-    end
-
     let(:config) do
       config = AppConf.new
       config.from_hash({
@@ -39,7 +31,11 @@ module KnifeSpork::Plugins
         allow(g).to receive(:git_commit)
         allow(g).to receive(:git_push)
         allow(g).to receive(:github_pull_request)
-        allow(g).to receive(:args).and_return(args)
+        allow(g).to receive(:args).and_return({
+          :environments => ['TestEnvironment'],
+          :attribute => 'hello',
+          :value => 'world'
+        })
       end
     end
 
