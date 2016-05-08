@@ -7,20 +7,12 @@ require 'octokit'
 module KnifeSpork::Plugins
   describe Git do
     let(:config) do
-      config = AppConf.new
-      config.from_hash({
-        'plugins' => {
-          'git' => {
-            'enabled' => true,
-            'auto_push' => {
-              'disabled' => [
-                'after_envgroup_attribute_set' 
-              ]
-            }
-          }
-        }
-      })
+      config = {'plugins' => {'git' => {}}}
+      config['plugins']['git']['enabled'] = true
 
+      c = AppConf.new
+      c.from_hash(config)
+      c
     end
 
     let(:git_plugin) do
