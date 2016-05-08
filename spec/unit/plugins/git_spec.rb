@@ -32,6 +32,7 @@ module KnifeSpork::Plugins
     end
 
     it "checks if hook is allowed to auto_push" do
+      allow(git_plugin).to receive_message_chain(:config, :auto_push, :disabled, :include? => true)
       expect(git_plugin.auto_push_disabled?(:after_envgroup_attribute_set)).to eq true
     end
 
