@@ -6,17 +6,11 @@ require 'octokit'
 
 module KnifeSpork::Plugins
   describe Git do
-    let(:config) do
-      config = {'plugins' => {'git' => {}}}
-      config['plugins']['git']['enabled'] = true
-
-      c = AppConf.new
-      c.from_hash(config)
-      c
-    end
-
     let(:git_plugin) do
-      Git.new(:config => config).tap do |g|
+      Git.new(:config => AppConf.new).tap do |g|
+        allow(g).to receive_message_chain(:config, :auto_push, :disabled, :include? => true)
+        allow(g).to receive_message_chain(:config, :github => {})
+
         allow(g).to receive(:environment_path).and_return '/path/to/environments'
         allow(g).to receive(:git_branch)
         allow(g).to receive(:git_add)
@@ -101,7 +95,7 @@ module KnifeSpork::Plugins
 
       context 'when git branch is set' do
         it 'pushes changes to remote repo' do
-          config.plugins.git['branch'] = 'master'
+          allow(git_plugin).to receive_message_chain(:config, :plugins, :git, :branch => 'master')
 
           expect(git_plugin).to receive(:git_branch).with('master')
         end
@@ -133,8 +127,6 @@ module KnifeSpork::Plugins
 
       context "when github is enabled" do
         it "creates pull request to master" do
-          config.plugins.git['github'] = {}
-
           expect(git_plugin).to receive(:github_pull_request).with('Set hello to world in TestEnvironment', 'attribute/hello')
         end
       end
