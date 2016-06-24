@@ -57,8 +57,8 @@ module KnifeSpork
         allow(test_environment1).to receive(:save)
         allow(test_environment2).to receive(:save)
 
-        expect(knife).to receive(:override_attribute).with("json", {'hello' => 'world'}, test_environment1, true, false)
-        expect(knife).to receive(:override_attribute).with("json", {'hello' => 'world'}, test_environment2, true, false)
+        expect(knife).to receive(:override_attribute).with("json", {'hello' => 'world'}, test_environment1, true)
+        expect(knife).to receive(:override_attribute).with("json", {'hello' => 'world'}, test_environment2, true)
 
         knife.run
       end
