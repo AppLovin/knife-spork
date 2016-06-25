@@ -208,6 +208,7 @@ module KnifeSpork
       end
 
       def load_from_berkshelf(name)
+        return unless self.config[:berksfile]
         return unless defined?(::Berkshelf)
         return unless ::File.exist?(self.config[:berksfile])
         berksfile = ::Berkshelf::Berksfile.from_file(self.config[:berksfile])
