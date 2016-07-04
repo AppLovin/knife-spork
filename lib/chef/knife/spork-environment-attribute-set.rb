@@ -47,13 +47,7 @@ module KnifeSpork
 
       group = @name_args.first
 
-      environments = if ! spork_config.environment_groups[group].nil?
-                      spork_config.environment_groups[group]
-                    elsif Set.new(group.split(",")).subset? Set.new(spork_config.environment_groups.to_hash.values.flatten)
-                      group.split(",") 
-                    else
-                      []
-                    end
+      environments = @name_args[0].split(",").map { |env| load_specified_environment_group(env) }.flatten
 
       if environments.length == 0
         ui.error("Environment group #{group} not found.")
@@ -76,7 +70,7 @@ module KnifeSpork
         } 
 
       run_plugins(:before_environment_attribute_set)
-
+     
       environments.each do |env|
         environment = load_environment_from_file(env)
       
