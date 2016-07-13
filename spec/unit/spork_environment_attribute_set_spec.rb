@@ -32,5 +32,11 @@ module KnifeSpork
         it 'does not upload environment'
       end
     end
+
+    describe '#hashify' do
+      it 'generates nested hash from string' do
+        expect(knife.hashify('hello:world', 'test')).to eq({'hello' => { 'world' => 'test' }})
+      end
+    end
   end
 end

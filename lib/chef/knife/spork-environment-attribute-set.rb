@@ -101,6 +101,13 @@ module KnifeSpork
 
       run_plugins(:after_environment_attribute_set)
     end
+
+    def hashify(string, value)
+      {}.tap do |h|
+        keys = string.split(':')
+        keys.reduce(h){ |h,j| h[j] = (j == keys.last ? value : {}) }
+      end
+    end
   
     def override_attribute(attribute, value, environment, create_if_missing = false)
         old_hash = environment.override_attributes.hash
