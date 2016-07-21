@@ -3,6 +3,7 @@ require 'knife-spork/runner'
 require 'knife-spork/utils'
 require 'set'
 require 'json'
+require 'chef/mixin/deep_merge'
 
 module KnifeSpork
   class SporkEnvironmentAttributeSet < Chef::Knife
@@ -107,6 +108,10 @@ module KnifeSpork
         keys = string.split(':')
         keys.reduce(h){ |h,j| h[j] = (j == keys.last ? value : {}) }
       end
+    end
+
+    def merge(i, j)
+      Chef::Mixin::DeepMerge.merge(i,j)
     end
   
     def override_attribute(attribute, value, environment, create_if_missing = false)

@@ -4,6 +4,7 @@ require 'spec_helper'
 
 module KnifeSpork
   describe SporkEnvironmentAttributeSet do
+
     let(:stdout_io) { StringIO.new }
     let(:stderr_io) { StringIO.new }
 
@@ -30,6 +31,16 @@ module KnifeSpork
 
       context 'when --no_upload is passed' do
         it 'does not upload environment'
+      end
+    end
+
+    describe '#merge' do
+      before(:each) { set_chef_config }
+      let(:environment) { knife.load_environment_from_file('example') }
+
+      it 'merges two environment override attributes with hash' do
+        override_attributes = knife.merge(environment.override_attributes, { 'hello' => 'world' })
+        expect(override_attributes['hello']).to eq('world')
       end
     end
 
