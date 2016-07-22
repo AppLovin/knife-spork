@@ -83,7 +83,7 @@ module KnifeSpork
 
         ui.msg "Modifying #{env}"
         old_override_attributes = environment.override_attributes
-        environment.override_attributes = merge(environment.override_attributes, hashify(@name_args, value))
+        environment.override_attributes = merge(environment.override_attributes, hashify(@name_args[1], value))
 
         if old_override_attributes != environment.override_attributes
           new_environment_json = pretty_print_json(environment.to_hash)
