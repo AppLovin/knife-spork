@@ -25,7 +25,8 @@ module KnifeSpork
     describe "#run" do
       before(:each) { set_chef_config }
       it 'calls override_attribute method' do
-        expect(knife).to receive(:override_attribute)
+        expect(knife).to receive(:hashify)
+        expect(knife).to receive(:merge)
         knife.run
       end
 

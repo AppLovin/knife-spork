@@ -11,7 +11,6 @@ module KnifeSpork
     banner 'knife spork environment attribute set ENVIRONMENT ATTRIBUTE VALUE'
 
     include KnifeSpork::Runner
-    include Utils
 
     option :create_if_missing,
            :long => '--create_if_missing',
@@ -83,9 +82,10 @@ module KnifeSpork
 
 
         ui.msg "Modifying #{env}"
-        modified = override_attribute(@name_args[1], value, environment, create_if_missing = create_if_missing )
+        old_override_attributes = environment.override_attributes
+        environment.override_attributes = merge(environment.override_attributes, hashify(@name_args, value))
 
-        if modified 
+        if old_override_attributes != environment.override_attributes
           new_environment_json = pretty_print_json(environment.to_hash)
           save_environment_changes(env, new_environment_json)
 
@@ -112,14 +112,6 @@ module KnifeSpork
 
     def merge(i, j)
       Chef::Mixin::DeepMerge.merge(i,j)
-    end
-  
-    def override_attribute(attribute, value, environment, create_if_missing = false)
-        old_hash = environment.override_attributes.hash
-        environment.override_attributes = Utils.hash_set(attribute, value, environment.override_attributes, 
-          create_if_missing = create_if_missing)
-
-        old_hash != environment.override_attributes.hash
     end
   end
 end
