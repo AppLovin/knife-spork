@@ -532,7 +532,7 @@ module KnifeSpork
 
       def branch
         if args[:attribute]
-          "attribute/#{args[:attribute]}"
+          "attribute/#{args[:attribute].gsub(":", "_")}"
         else
           args[:branch] || config.branch || 'master'
         end
