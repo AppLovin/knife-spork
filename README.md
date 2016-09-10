@@ -1,163 +1,58 @@
-KnifeSpork
+KnifeArchon
 ===========
-KnifeSpork is a workflow plugin for `Chef::Knife` which helps multiple developers work on the same Chef Server and repository without treading on each other's toes. This plugin was designed around the workflow we have here at Etsy, where several people are working on the Chef repository and Chef Server simultaneously. It contains several functions, documented below:
+Power Overwhelming! KnifeArchon is a tool for manipulating infrastructure managed by chef.
 
-[![Build Status](https://travis-ci.org/jonlives/knife-spork.svg)](https://travis-ci.org/jonlives/knife-spork)
-[![Gem Version](https://badge.fury.io/rb/knife-spork.png)](http://badge.fury.io/rb/knife-spork)
+It is a modified version of the original [knife-spork project](https://github.com/jonlives/knife-spork) by [@jonlives](https://github.com/jonlives) at Etsy.
 
-Installation
+Usage
 ------------
+### Change attributes in multiple environments 
 
-### Gem Install
-`knife-spork` is available on rubygems. Add the following to your `Gemfile`:
-
-```ruby
-gem 'knife-spork'
+```
+knife spork environment attribute set ENVIRONMENT ATTRIBUTE VALUE
+knife spork environment attribute unset ENVIRONMENT ATTRIBUTE
 ```
 
-or install the gem manually:
+###### Example 1: Pass a list of environments
+
+```
+$ knife spork environment attribute set Environment1,Environment2 hello world
+Modifying Environment1
+Done modifying Environment1 at 2015-08-06 23:55:06 -0700
+Modifying Environment2
+Done modifying Environment2 at 2015-08-06 23:55:07 -0700
+```
+
+This will add the key ```hello``` and set it with the value of ```world``` in the override_attributes section of the Environment1 and Environment2: 
+
+```json
+{
+  "override_attributes": {
+    "hello": "world"
+  }
+}
+```
+
+###### Example 2: Pass the name of a group of environments as specified in the configuration file
+```
+$ knife spork environment attribute set test hello world
+Modifying Environment1
+Done modifying Environment1 at 2015-08-06 23:55:06 -0700
+Modifying Environment2
+Done modifying Environment2 at 2015-08-06 23:55:07 -0700
+```
+
+### Unset environment attributes
+
+This is the opposite of ```environment attribute set``` subcommand. It removes an attribute from the environment
 
 ```bash
-gem install knife-spork
+$ knife spork environment attribute unset test hello
+Modifying TestEnvironment4
+Done modifying TestEnvironment4 at 2015-08-16 13:36:48 -0700
+Modifying TestEnvironment5
+Done modifying TestEnvironment5 at 2015-08-16 13:36:48 -0700
 ```
-
-**Please note**: As of version 1.3.0, knife-spork depends on version 11.0.0 or greater of the chef gem. If you're still using Chef 10, please continue to use knife-spork 1.2.x
-Spork Configuration
--------------------
-Out of the box, knife spork will work with no configuration. However, you can optionally enable several features to enhance its functionality.
-
-KnifeSpork will look for a configuration file in the following locations, in ascending order of precedence:
-
-- `config/spork-config.yml`
-- `/etc/spork-config.yml`
-- `~/.chef/spork-config.yml`
-
-Anything set in the configuration file in your home directory for example, will override options set in your Chef repository or `/etc`.
-
-Below is a sample config file with all supported options and all shipped plugins enabled below, followed by an explanation of each section.
-
-```yaml
-default_environments:
-  - development
-  - production
-environment_groups:
-  qa_group:
-    - quality_assurance
-    - staging
-  test_group:
-    - user_testing
-    - acceptance_testing
-version_change_threshold: 2
-preserve_constraint_operators: true
-environment_path: "/home/me/environments"
-save_environment_locally_on_create: false
-role_path: "/home/me/roles"
-custom_plugin_path: "/home/me/spork-plugins"
-always_promote_remote: true
-skip_berkshelf: false
-role_match_file_name: true
-json_options:
-  indent: "    "
-plugins:
-  campfire:
-    account: myaccount
-    token: a1b2c3d4...
-  foodcritic:
-    tags: ['any']
-  hipchat:
-    api_token: ABC123
-    rooms:
-      - General
-      - Web Operations
-    notify: true
-    color: yellow
-  jabber:
-    username: YOURUSER
-    password: YOURPASSWORD
-    nickname: Chef Bot
-    server_name: your.jabberserver.com
-    server_port: 5222
-    rooms:
-      - engineering@your.conference.com/spork
-      - systems@your.conference.com/spork
-  git:
-    enabled: true
-    auto_push: true
-    branch: some_branch
-  irccat:
-    server: irccat.mydomain.com
-    port: 12345
-    gist: "/usr/bin/gist"
-    channel: ["chef-annoucements"]
-  graphite:
-    server: graphite.mydomain.com
-    port: 2003
-  influxdb:
-    database: deployments
-    username: deploy
-    password: deploy
-    series: deployments
-    host: influx.example.com
-    port: 8086
-  eventinator:
-    url: http://eventinator.mydomain.com/events/oneshot
-  slack:
-    api_token: abc123
-    channel: "#sysops"
-    teamname: myteam
-    username: knife
-    icon_url: http://example.com/image.jpg
-  rubocop:
-    epic_fail: true
-    show_name: false
-    autocorrect: false
-    out_file: <file>
-    sev_level: <C|W|E>
-    lint: false
-```
-
-#### Default Environments
-The `default_environments` directive allows you to specify a default list of environments you want to promote changes to. If this option is configured and you *omit* the environment parameter when promoting KnifeSpork will promote to all environments in this list.
-
-#### Environment Groups
-The `environment_groups` directive allows you to specify a list of environments referenced by group names that you want to promote changes to.
-
-#### Version Change Threshold
-The `version_change_threshold` directive allows you to customise the threshold used by a safety check in spork promote which will prompt for confirmation if you're promoting a cookbook by more than version_change_threshold versions. This defaults to 2 if not set, ie promoting a cookbook from v1.0.1 to v 1.0.2 will not trip this check, wheras promoting from v1.0.1 to v1.0.3 will.
-
-#### Preserve Constraint Operators
-The `preserve_constraint_operators` directive causes spork promote to preserve existing version constraint operators in your environment files, only updating the version number. This directive is disabled by default, which causes spork to always use the `=` constraint.
-
-#### Always Promote Remote
-The `always_promote_remote` directive allows you to tell spork promote to always act as if the --remote option had been specified. This will also have the same effect on spork omni. This option should only be used if you're sure you want all changes to be uploaded to the server as soon as you run promote.
-
-#### Skip Berkshelf
-The `skip_berkshelf` directive is a temporary flag added in [#138](https://github.com/jonlives/knife-spork/issues/138) to allow Berkshelf functionality to be optionally bypassed until Berkshelf 3 support has been added to knife-spork per [#85](https://github.com/jonlives/knife-spork/issues/85). It simply removed the :Berkshelf constant from the namespace used by knife-spork.
-
-#### JSON Options
-The `json_options` directive allows you to tell spork to pass options to [pretty_generate](http://www.ruby-doc.org/stdlib-1.9.3/libdoc/json/rdoc/JSON.html#method-i-pretty_generate) to control the format of the resulting json
-
-#### Environment Path
-The `environment_path` directive allows you to specify the path to where you store your chef environment json files. If this parameter is not specified, spork will default to using the first element of your cookbook_path, replacing the word "cookbooks" with "environments"
-
-#### Save Environment on Create
-The `save_environment_on_create` directive allows you to have the ```knife spork environment create``` command save a copy of the new environment to your Chef repository. This will default to saving environment files in the location specified by the ```environment_path``` directive. If this parameter is not specified, spork will default to using the first element of your cookbook_path, replacing the word "cookbooks" with "environments"
-
-
-#### Role Path
-The `role_path` allows you to specify the path to where you store your chef role json files. If this parameter is not specified, spork will default to using the first element of your cookbook_path, replacing the word "cookbooks" with "roles"
-
-#### Role Match File Name
-The `role_match_file_name` flag allows you to check whether the file name that is used to upload a role matches the role name as well. If the parameter is specified, or flag `--match-filename` is set, spork will not let you upload a role from a file unless the name matches the rolename.
-
-#### Custom Plugin Path
-The `custom_plugin_path` allows you to specify an additional directory from which to load knife-spork plugins. If this parameter is not specified or the path set does not exist, only the default plugins shipped with knife-spork will be loaded (if enabled in config)
-
-
-#### Plugins
-Knife spork supports plugins to allow users to hook it into existing systems such as source control, monitoring and chat systems. Plugins are enabled / disabled by adding / removing their config block from the plugin section of the config file. Any of the default plugins shown above can be disabled by removing their section.
-
-For more information on how to develop plugins for spork, please read the [plugins/README.md](plugins/README.md) file.
 
 Spork Info
 -----------
@@ -502,6 +397,144 @@ knife spork environment delete
 knife spork environment edit
 knife spork environment from file
 ```
+
+Spork Configuration
+-------------------
+Out of the box, knife spork will work with no configuration. However, you can optionally enable several features to enhance its functionality.
+
+KnifeArchon will look for a configuration file in the following locations, in ascending order of precedence:
+
+- `config/spork-config.yml`
+- `/etc/spork-config.yml`
+- `~/.chef/spork-config.yml`
+
+Anything set in the configuration file in your home directory for example, will override options set in your Chef repository or `/etc`.
+
+Below is a sample config file with all supported options and all shipped plugins enabled below, followed by an explanation of each section.
+
+```yaml
+default_environments:
+  - development
+  - production
+environment_groups:
+  qa_group:
+    - quality_assurance
+    - staging
+  test_group:
+    - user_testing
+    - acceptance_testing
+version_change_threshold: 2
+preserve_constraint_operators: true
+environment_path: "/home/me/environments"
+save_environment_locally_on_create: false
+role_path: "/home/me/roles"
+custom_plugin_path: "/home/me/spork-plugins"
+always_promote_remote: true
+skip_berkshelf: false
+role_match_file_name: true
+json_options:
+  indent: "    "
+plugins:
+  campfire:
+    account: myaccount
+    token: a1b2c3d4...
+  foodcritic:
+    tags: ['any']
+  hipchat:
+    api_token: ABC123
+    rooms:
+      - General
+      - Web Operations
+    notify: true
+    color: yellow
+  jabber:
+    username: YOURUSER
+    password: YOURPASSWORD
+    nickname: Chef Bot
+    server_name: your.jabberserver.com
+    server_port: 5222
+    rooms:
+      - engineering@your.conference.com/spork
+      - systems@your.conference.com/spork
+  git:
+    enabled: true
+    auto_push: true
+    branch: some_branch
+  irccat:
+    server: irccat.mydomain.com
+    port: 12345
+    gist: "/usr/bin/gist"
+    channel: ["chef-annoucements"]
+  graphite:
+    server: graphite.mydomain.com
+    port: 2003
+  influxdb:
+    database: deployments
+    username: deploy
+    password: deploy
+    series: deployments
+    host: influx.example.com
+    port: 8086
+  eventinator:
+    url: http://eventinator.mydomain.com/events/oneshot
+  slack:
+    api_token: abc123
+    channel: "#sysops"
+    teamname: myteam
+    username: knife
+    icon_url: http://example.com/image.jpg
+  rubocop:
+    epic_fail: true
+    show_name: false
+    autocorrect: false
+    out_file: <file>
+    sev_level: <C|W|E>
+    lint: false
+```
+
+#### Default Environments
+The `default_environments` directive allows you to specify a default list of environments you want to promote changes to. If this option is configured and you *omit* the environment parameter when promoting KnifeArchon will promote to all environments in this list.
+
+#### Environment Groups
+The `environment_groups` directive allows you to specify a list of environments referenced by group names that you want to promote changes to.
+
+#### Version Change Threshold
+The `version_change_threshold` directive allows you to customise the threshold used by a safety check in spork promote which will prompt for confirmation if you're promoting a cookbook by more than version_change_threshold versions. This defaults to 2 if not set, ie promoting a cookbook from v1.0.1 to v 1.0.2 will not trip this check, wheras promoting from v1.0.1 to v1.0.3 will.
+
+#### Preserve Constraint Operators
+The `preserve_constraint_operators` directive causes spork promote to preserve existing version constraint operators in your environment files, only updating the version number. This directive is disabled by default, which causes spork to always use the `=` constraint.
+
+#### Always Promote Remote
+The `always_promote_remote` directive allows you to tell spork promote to always act as if the --remote option had been specified. This will also have the same effect on spork omni. This option should only be used if you're sure you want all changes to be uploaded to the server as soon as you run promote.
+
+#### Skip Berkshelf
+The `skip_berkshelf` directive is a temporary flag added in [#138](https://github.com/jonlives/knife-spork/issues/138) to allow Berkshelf functionality to be optionally bypassed until Berkshelf 3 support has been added to knife-spork per [#85](https://github.com/jonlives/knife-spork/issues/85). It simply removed the :Berkshelf constant from the namespace used by knife-spork.
+
+#### JSON Options
+The `json_options` directive allows you to tell spork to pass options to [pretty_generate](http://www.ruby-doc.org/stdlib-1.9.3/libdoc/json/rdoc/JSON.html#method-i-pretty_generate) to control the format of the resulting json
+
+#### Environment Path
+The `environment_path` directive allows you to specify the path to where you store your chef environment json files. If this parameter is not specified, spork will default to using the first element of your cookbook_path, replacing the word "cookbooks" with "environments"
+
+#### Save Environment on Create
+The `save_environment_on_create` directive allows you to have the ```knife spork environment create``` command save a copy of the new environment to your Chef repository. This will default to saving environment files in the location specified by the ```environment_path``` directive. If this parameter is not specified, spork will default to using the first element of your cookbook_path, replacing the word "cookbooks" with "environments"
+
+
+#### Role Path
+The `role_path` allows you to specify the path to where you store your chef role json files. If this parameter is not specified, spork will default to using the first element of your cookbook_path, replacing the word "cookbooks" with "roles"
+
+#### Role Match File Name
+The `role_match_file_name` flag allows you to check whether the file name that is used to upload a role matches the role name as well. If the parameter is specified, or flag `--match-filename` is set, spork will not let you upload a role from a file unless the name matches the rolename.
+
+#### Custom Plugin Path
+The `custom_plugin_path` allows you to specify an additional directory from which to load knife-spork plugins. If this parameter is not specified or the path set does not exist, only the default plugins shipped with knife-spork will be loaded (if enabled in config)
+
+
+#### Plugins
+Knife spork supports plugins to allow users to hook it into existing systems such as source control, monitoring and chat systems. Plugins are enabled / disabled by adding / removing their config block from the plugin section of the config file. Any of the default plugins shown above can be disabled by removing their section.
+
+For more information on how to develop plugins for spork, please read the [plugins/README.md](plugins/README.md) file.
+
 
 Troubleshooting
 ---------------

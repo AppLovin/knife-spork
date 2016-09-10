@@ -26,6 +26,9 @@ module KnifeSpork
       role_edit
       post_role = load_role(@object_name)
       @object_difference = json_diff(pre_role,post_role).to_s
+
+      save_role_changes(@object_name, pretty_print_json(post_role.to_hash))
+
       run_plugins(:after_roleedit)
     end
 

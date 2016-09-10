@@ -26,6 +26,9 @@ module KnifeSpork
       environment_edit
       post_environment = load_environment(@object_name)
       @object_difference = json_diff(pre_environment,post_environment).to_s
+
+      save_environment_changes(@object_name, pretty_print_json(post_environment.to_hash))
+
       run_plugins(:after_environmentedit)
     end
 

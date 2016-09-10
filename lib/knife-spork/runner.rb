@@ -13,11 +13,11 @@ module KnifeSpork
     module ClassMethods; end
 
     module InstanceMethods
+
       def spork_config
         return @spork_config unless @spork_config.nil?
 
         @spork_config = AppConf.new
-        load_paths = [ File.expand_path("#{cookbook_path.gsub('cookbooks','')}/config/spork-config.yml"), File.expand_path('config/spork-config.yml'), '/etc/spork-config.yml', File.expand_path('~/.chef/spork-config.yml') ]
         load_paths.each do |load_path|
           if File.exists?(load_path)
             @spork_config.load(load_path)
@@ -46,11 +46,15 @@ module KnifeSpork
           :environments => environments,
           :environment_diffs => environment_diffs,
           :environment_path => environment_path,
+          :role_path => role_path,
+          :node_path => node_path,
+          :databag_path => databag_path,
           :cookbook_path => cookbook_path,
           :object_name => @object_name,
           :object_secondary_name => @object_secondary_name,
           :object_difference => @object_difference,
-          :ui => ui
+          :ui => ui,
+          :args => @args.nil?? {} : @args
         )
       end
 
@@ -121,6 +125,12 @@ module KnifeSpork
         File.open(environment_path, 'w'){ |f| f.puts(json) }
       end
 
+      def save_role_changes(role, json)
+        roles_path = File.expand_path( File.join(role_path, "#{role}.json") )
+
+        File.open(roles_path, 'w'){ |f| f.puts(json) }
+      end
+
       def valid_version?(version)
         version_keys = version.split('.')
         return false unless version_keys.size == 3 && version_keys.any?{ |k| begin Float(k); rescue false; else true; end }
@@ -169,6 +179,14 @@ module KnifeSpork
         spork_config[:role_path] || cookbook_path.gsub("/cookbooks","/roles")
       end
 
+      def node_path
+        spork_config[:node_path] || cookbook_path.gsub("/cookbooks","/nodes")
+      end
+
+      def databag_path
+        spork_config[:databag_path] || cookbook_path.gsub("/cookbooks","/data_bags")
+      end
+
       def all_cookbooks
         ::Chef::CookbookLoader.new(::Chef::Config.cookbook_path)
       end
@@ -190,6 +208,7 @@ module KnifeSpork
       end
 
       def load_from_berkshelf(name)
+        return unless self.config[:berksfile]
         return unless defined?(::Berkshelf)
         return unless ::File.exist?(self.config[:berksfile])
         berksfile = ::Berkshelf::Berksfile.from_file(self.config[:berksfile])
@@ -323,6 +342,11 @@ module KnifeSpork
     def self.included(receiver)
       receiver.extend(ClassMethods)
       receiver.send(:include, InstanceMethods)
+    end
+
+    private
+    def load_paths
+      [ File.expand_path("#{cookbook_path.gsub('cookbooks','')}/config/spork-config.yml"), File.expand_path('config/spork-config.yml'), '/etc/spork-config.yml', File.expand_path('~/.chef/spork-config.yml'), File.expand_path("~/spork-config.yml") ]
     end
   end
 end

@@ -18,6 +18,11 @@ module KnifeSpork
         :boolean => true,
         :default => false
 
+    option :message,
+           :short => '-m',
+           :long => '--message git_message',
+           :description => 'Git commit message if auto_push is enabled'
+
     def run
       self.class.send(:include, KnifeSpork::Runner)
       self.config = Chef::Config.merge!(config)
@@ -39,6 +44,7 @@ module KnifeSpork
           role_from_file
           post_role = load_role(@object_name.gsub(".json","").gsub(".rb",""))
           @object_difference = json_diff(pre_role,post_role).to_s
+          @args = { :git_message => config[:message] } 
           run_plugins(:after_rolefromfile)
       end
     end

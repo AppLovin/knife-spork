@@ -67,8 +67,28 @@ module KnifeSpork
         @options[:environment_path]
       end
 
+      def role_path
+        @options[:role_path]
+      end
+
+      def node_path
+        @options[:node_path]
+      end
+      
+      def databag_path
+        @options[:databag_path]
+      end
+
       def cookbook_path
         @options[:cookbook_path]
+      end
+
+      def role_path
+        File.expand_path(config.role_path.nil? ? "#{cookbook_path}/../roles" : config[:role_path])
+      end
+
+      def node_path
+        File.expand_path(config.role_path.nil? ? "#{cookbook_path}/../nodes" : config[:role_path])
       end
 
       def object_name
@@ -89,6 +109,10 @@ module KnifeSpork
 
       def current_user
         (begin `git config user.name`.chomp; rescue nil; end || ENV['USERNAME'] || ENV['USER']).strip
+      end
+
+      def args
+        @options[:args]
       end
 
       # Wrapper method around require that attempts to include the associated file. If it does not exist
