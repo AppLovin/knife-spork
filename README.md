@@ -1,6 +1,6 @@
-KnifeArchon
+KnifeSpork
 ===========
-Power Overwhelming! KnifeArchon is a tool for manipulating infrastructure managed by chef.
+Power Overwhelming! KnifeSpork is a workflow plugin for manipulating infrastructure managed by chef.
 
 It is a modified version of the original [knife-spork project](https://github.com/jonlives/knife-spork) by [@jonlives](https://github.com/jonlives) at Etsy.
 
