@@ -4,6 +4,9 @@ require 'app_conf'
 module KnifeSpork
   describe SporkEnvironmentAttributeUnset do
     let(:env_args) { nil }
+    let(:test_environment1) { double() }
+    let(:test_environment2) { double() }
+
     subject(:knife) do
       SporkEnvironmentAttributeUnset.new([env_args, 'hello']).tap do |k|
         allow(k).to receive(:run_plugins)
@@ -15,14 +18,6 @@ module KnifeSpork
         allow(k).to receive(:load_environment_from_file).with("TestEnvironment1").and_return(test_environment1)
         allow(k).to receive(:load_environment_from_file).with("TestEnvironment2").and_return(test_environment2)
       end
-    end
-
-    let(:test_environment1) do
-      double()
-    end
-
-    let(:test_environment2) do
-      double()
     end
 
     context '#run' do
