@@ -20,29 +20,24 @@ module KnifeSpork
       end
     end
 
+    before(:each) do
+      expect(test_environment1).to receive(:to_hash)
+      expect(test_environment1).to receive(:save)
+      expect(test_environment2).to receive(:to_hash)
+      expect(test_environment2).to receive(:save)
+
+      knife.run
+    end
+
     context '#run' do
       context 'when an environment group is passed' do
         let(:env_args) { 'test' }
-        it 'accepts argument' do
-          expect(test_environment1).to receive(:to_hash)
-          expect(test_environment1).to receive(:save)
-          expect(test_environment2).to receive(:to_hash)
-          expect(test_environment2).to receive(:save)
-
-          knife.run
-        end
+        it 'accepts argument'
       end
 
       context 'when a list of environments is passed' do
         let(:env_args) { 'TestEnvironment1,TestEnvironment2' }
-        it 'accepts argument' do
-          expect(test_environment1).to receive(:to_hash)
-          expect(test_environment1).to receive(:save)
-          expect(test_environment2).to receive(:to_hash)
-          expect(test_environment2).to receive(:save)
-
-          knife.run
-        end
+        it 'accepts argument'
       end
     end
   end
