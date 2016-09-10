@@ -22,6 +22,10 @@ module KnifeSpork
       cleanup_test_data
     end
 
+    before(:each) do
+      allow(knife).to receive(:run_plugins)
+    end
+
     describe "#run" do
       before(:each) { set_chef_config }
       it 'calls override_attribute method' do
