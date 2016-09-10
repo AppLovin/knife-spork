@@ -1,5 +1,4 @@
 require 'chef/knife/spork-environment-attribute-unset'
-require 'app_conf'
 
 module KnifeSpork
   describe SporkEnvironmentAttributeUnset do
