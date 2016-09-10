@@ -3,8 +3,9 @@ require 'app_conf'
 
 module KnifeSpork
   describe SporkEnvironmentAttributeUnset do
+    let(:env_args) { nil }
     subject(:knife) do
-      SporkEnvironmentAttributeUnset.new(['test', 'hello']).tap do |k|
+      SporkEnvironmentAttributeUnset.new([env_args, 'hello']).tap do |k|
         allow(k).to receive(:run_plugins)
         allow(k.ui).to receive(:msg)
         allow(k).to receive(:unset_attribute).and_return(true)
@@ -25,35 +26,28 @@ module KnifeSpork
     end
 
     context '#run' do
-      it 'accepts a group of environments' do
-        expect(test_environment1).to receive(:to_hash)
-        expect(test_environment1).to receive(:save)
+      context 'when an environment group is passed' do
+        let(:env_args) { 'test' }
+        it 'accepts argument' do
+          expect(test_environment1).to receive(:to_hash)
+          expect(test_environment1).to receive(:save)
+          expect(test_environment2).to receive(:to_hash)
+          expect(test_environment2).to receive(:save)
 
-        expect(test_environment2).to receive(:to_hash)
-        expect(test_environment2).to receive(:save)
-
-        knife.run
+          knife.run
+        end
       end
 
-      it 'accepts a list of environments' do
-        k = SporkEnvironmentAttributeUnset.new(['TestEnvironment1,TestEnvironment2', 'hello']).tap do |k|
-          allow(k).to receive(:run_plugins)
-          allow(k.ui).to receive(:msg)
-          allow(k).to receive(:unset_attribute).and_return(true)
-          allow(k).to receive(:pretty_print_json)
-          allow(k).to receive(:save_environment_changes)
-          allow(k).to receive_message_chain(:spork_config, :environment_groups => { "test" => [ "TestEnvironment1", "TestEnvironment2" ]})
-          allow(k).to receive(:load_environment_from_file).with("TestEnvironment1").and_return(test_environment1)
-          allow(k).to receive(:load_environment_from_file).with("TestEnvironment2").and_return(test_environment2)
+      context 'when a list of environments is passed' do
+        let(:env_args) { 'TestEnvironment1,TestEnvironment2' }
+        it 'accepts argument' do
+          expect(test_environment1).to receive(:to_hash)
+          expect(test_environment1).to receive(:save)
+          expect(test_environment2).to receive(:to_hash)
+          expect(test_environment2).to receive(:save)
+
+          knife.run
         end
-
-        expect(test_environment1).to receive(:to_hash)
-        expect(test_environment1).to receive(:save)
-
-        expect(test_environment2).to receive(:to_hash)
-        expect(test_environment2).to receive(:save)
-
-        k.run
       end
     end
   end
