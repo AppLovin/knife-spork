@@ -67,5 +67,17 @@ module KnifeSpork
 
         old_hash != environment.override_attributes.hash
     end
+  
+    def unset(attributes, environment_attrs)
+      levels = attributes.split(":")
+      last_key = levels.pop
+      last_obj = levels.inject(environment_attrs) do |h, k|
+        h[k] unless h.nil?
+      end
+
+      last_obj.delete(last_key) unless last_obj.nil?
+
+      environment_attrs
+    end
   end
 end
