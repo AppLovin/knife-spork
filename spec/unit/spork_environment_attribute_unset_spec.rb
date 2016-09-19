@@ -7,22 +7,17 @@ module KnifeSpork
     after(:each) { cleanup_test_data }
 
     let(:env_args) { nil }
-    let(:test_environment1) { double() }
-    let(:test_environment2) { double() }
 
     subject(:knife) do
       SporkEnvironmentAttributeUnset.new([env_args, 'hello'])
     end
 
     describe '#run' do
-      before(:each) do
-        expect(test_environment1).to receive(:to_hash)
-        expect(test_environment1).to receive(:save)
-        expect(test_environment2).to receive(:to_hash)
-        expect(test_environment2).to receive(:save)
-      end
+      let(:test_environment) { double() }
 
       before(:each) do
+        expect(test_environment1).to receive(:to_hash).at_least(:once)
+        expect(test_environment1).to receive(:save).at_least(:once)
         expect(knife).to receive(:run_plugins)
         expect(knife.ui).to receive(:msg)
         expect(knife).to receive(:unset_attribute).and_return(true)
