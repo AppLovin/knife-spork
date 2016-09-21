@@ -16,27 +16,27 @@ module KnifeSpork
       let(:test_environment) { double() }
 
       before(:each) do
-        expect(test_environment1).to receive(:to_hash).at_least(:once)
-        expect(test_environment1).to receive(:save).at_least(:once)
-        expect(knife).to receive(:run_plugins)
-        expect(knife.ui).to receive(:msg)
-        expect(knife).to receive(:unset_attribute).and_return(true)
-        expect(knife).to receive(:pretty_print_json)
-        expect(knife).to receive(:save_environment_changes)
-        expect(knife).to receive_message_chain(:spork_config, :environment_groups => { "test" => [ "TestEnvironment1", "TestEnvironment2" ]})
-        expect(knife).to receive(:load_environment_from_file).with("TestEnvironment1").and_return(test_environment1)
-        expect(knife).to receive(:load_environment_from_file).with("TestEnvironment2").and_return(test_environment2)
+        expect(test_environment).to receive(:to_hash).at_least(:once)
+        expect(test_environment).to receive(:save).at_least(:once)
+        expect(knife).to receive(:run_plugins).exactly(:twice)
+        allow(knife.ui).to receive(:msg)
+        expect(knife).to receive(:unset_attribute).and_return(true).exactly(:twice)
+        expect(knife).to receive(:pretty_print_json).exactly(:twice)
+        expect(knife).to receive(:save_environment_changes).exactly(:twice)
+        allow(knife).to receive_message_chain(:spork_config, :environment_groups => { "test" => [ "TestEnvironment1", "TestEnvironment2" ]})
+        expect(knife).to receive(:load_environment_from_file).with("TestEnvironment1").and_return(test_environment).exactly(:once)
+        expect(knife).to receive(:load_environment_from_file).with("TestEnvironment2").and_return(test_environment).exactly(:once)
       end
 
       before(:each) { knife.run }
       context 'when an environment group is passed' do
         let(:env_args) { 'test' }
-        it 'accepts argument'
+        it 'accepts argument' do; end
       end
 
       context 'when a list of environments is passed' do
         let(:env_args) { 'TestEnvironment1,TestEnvironment2' }
-        it 'accepts argument'
+        it 'accepts argument' do; end
       end
     end
 
