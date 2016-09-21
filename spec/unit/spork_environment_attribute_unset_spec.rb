@@ -58,14 +58,14 @@ module KnifeSpork
     
       context 'attribute exists' do
         it 'deletes attribute given nested attribute' do
-          new_env_attrs = knife.unset('the:quick', environment['override_attributes'])
-          expect(new_env_attrs['the']['quick']).to eq(nil)
+          expect(knife.unset('the:quick', environment)).to_not eq(nil)
+          expect(environment['override_attributes']['the']['quick']).to eq(nil)
         end
       end
 
       context 'attribute does not exist' do
         it 'does nothing' do
-          knife.unset('no:such:attribute', environment['override_attributes'])
+          expect(knife.unset('no:such:attribute', environment['override_attributes'])).to eq(nil)
         end
       end
     end
