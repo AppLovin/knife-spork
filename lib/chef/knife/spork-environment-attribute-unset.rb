@@ -60,13 +60,6 @@ module KnifeSpork
 
       run_plugins(:after_environment_attribute_unset)
     end
-
-    def unset_attribute(attribute, environment)
-        old_hash = environment.override_attributes.hash
-        environment.override_attributes = Utils.hash_unset(attribute, environment.override_attributes) 
-
-        old_hash != environment.override_attributes.hash
-    end
   
     def unset(attributes, environment)
       levels = attributes.split(":")
