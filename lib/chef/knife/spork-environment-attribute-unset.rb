@@ -71,7 +71,7 @@ module KnifeSpork
     def unset(attributes, environment)
       levels = attributes.split(":")
       last_key = levels.pop
-      last_obj = levels.inject(environment['override_attributes']) do |h, k|
+      last_obj = levels.inject(environment.override_attributes) do |h, k|
         h[k] unless h.nil?
       end
 

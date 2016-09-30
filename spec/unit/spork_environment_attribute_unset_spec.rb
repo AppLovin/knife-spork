@@ -20,7 +20,7 @@ module KnifeSpork
         expect(test_environment).to receive(:save).at_least(:once)
         expect(knife).to receive(:run_plugins).exactly(:twice)
         allow(knife.ui).to receive(:msg)
-        expect(knife).to receive(:unset_attribute).and_return(true).exactly(:twice)
+        expect(knife).to receive(:unset).and_return(true).exactly(:twice)
         expect(knife).to receive(:pretty_print_json).exactly(:twice)
         expect(knife).to receive(:save_environment_changes).exactly(:twice)
         allow(knife).to receive_message_chain(:spork_config, :environment_groups => { "test" => [ "TestEnvironment1", "TestEnvironment2" ]})
@@ -47,25 +47,25 @@ module KnifeSpork
       end
 
       let(:environment) do 
-        {}.merge(knife.load_environment_from_file('example').tap do |e|
+        knife.load_environment_from_file('example').tap do |e|
           e.override_attributes({
             'the' => {
               'quick' => 'brown'
             }
           })
-        end)
+        end
       end
     
       context 'attribute exists' do
         it 'returns truthy value and deletes attribute given nested attribute' do
           expect(knife.unset('the:quick', environment)).to be_truthy
-          expect(environment['override_attributes']['the']['quick']).to eq(nil)
+          expect(environment.override_attributes['the']['quick']).to eq(nil)
         end
       end
 
       context 'attribute does not exist' do
         it 'returns falsey value' do
-          expect(knife.unset('no:such:attribute', environment['override_attributes'])).to be_falsey
+          expect(knife.unset('no:such:attribute', environment)).to be_falsey
         end
       end
     end
