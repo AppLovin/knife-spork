@@ -64,11 +64,15 @@ module KnifeSpork
     def unset(attributes, environment)
       levels = attributes.split(":")
       last_key = levels.pop
-      last_obj = levels.inject(environment.override_attributes) do |h, k|
-        h[k] unless h.nil?
+
+      deletions = [:override_attributes, :default_attributes].map do |level|
+        last_obj = levels.inject(environment.send(level)) do |h, k|
+          h[k] unless h.nil?
+        end
+        last_obj.delete(last_key) unless last_obj.nil?
       end
 
-      last_obj.delete(last_key) unless last_obj.nil?
+      deletions.any? { |i| not i.nil? }
     end
   end
 end
