@@ -12,29 +12,9 @@ module KnifeSpork
 
     include KnifeSpork::Runner
 
-    option :create_if_missing,
-           :long => '--create_if_missing',
-           :description => 'Create attribute if missing'
-
-    option :force_string,
-           :long => '--force_string',
-           :description => 'Force value to a string'
-
-    option :remarks,
-           :long => '--remarks',
-           :description => 'append to git commit message'
-
     option :no_upload,
            :long => '--no_upload',
            :description => 'whether or not to upload environment file'
-
-    option :branch,
-           :long => '--branch BRANCH',
-           :description => 'name of the branch to fork'
-
-    option :commit_message,
-           :long => '--commit_message MSG',
-           :description => 'commit message'
 
     def run 
       self.config = Chef::Config.merge!(config)
