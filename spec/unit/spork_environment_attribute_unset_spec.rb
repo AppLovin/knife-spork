@@ -48,6 +48,11 @@ module KnifeSpork
 
       let(:environment) do 
         knife.load_environment_from_file('example').tap do |e|
+          e.default_attributes({
+            'the' => {
+              'quick' => 'brown'
+            }
+          })
           e.override_attributes({
             'the' => {
               'quick' => 'brown'
@@ -60,6 +65,7 @@ module KnifeSpork
         it 'returns truthy value and deletes attribute given nested attribute' do
           expect(knife.unset('the:quick', environment)).to be_truthy
           expect(environment.override_attributes['the']['quick']).to eq(nil)
+          expect(environment.default_attributes['the']['quick']).to eq(nil)
         end
       end
 
