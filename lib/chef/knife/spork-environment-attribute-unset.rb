@@ -1,6 +1,5 @@
 require 'chef/knife'
 require 'knife-spork/runner'
-require 'knife-spork/utils'
 
 module KnifeSpork
   class SporkEnvironmentAttributeUnset < Chef::Knife
@@ -8,7 +7,6 @@ module KnifeSpork
     banner 'knife spork environment attribute unset ENVIRONMENT ATTRIBUTE'
 
     include KnifeSpork::Runner
-    include Utils
 
     def run 
       self.config = Chef::Config.merge!(config)
