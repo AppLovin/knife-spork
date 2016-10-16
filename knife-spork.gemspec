@@ -16,11 +16,14 @@ Gem::Specification.new do |gem|
   gem.name          = "knife-spork-x"
   gem.require_paths = ["lib"]
 
-  gem.add_development_dependency 'rake'
-  gem.add_development_dependency 'rspec', '>= 3.1.0'
-  gem.add_development_dependency 'chef-zero', '>= 3.2'
-  gem.add_runtime_dependency 'chef', '>= 11.0.0'
-  gem.add_runtime_dependency 'git', '>= 1.2.5'
-  gem.add_runtime_dependency 'app_conf', '>= 0.4.0'
-  gem.add_runtime_dependency 'diffy', '>= 3.0.1'
+  
+  gem.add_development_dependency 'rspec', '~> 3.1'
+  gem.add_development_dependency 'chef-zero', '~> 3.2'
+  gem.add_development_dependency 'rack', '~> 1.6' #TODO find a way to not have to deal with this
+
+  gem.add_runtime_dependency 'octokit', '~> 4.0'
+  gem.add_runtime_dependency 'chef', '~> 12.0'
+  gem.add_runtime_dependency 'git', '~> 1.2'
+  gem.add_runtime_dependency 'app_conf', '= 0.4.0'
+  gem.add_runtime_dependency 'diffy', '~> 3.0'
 end
