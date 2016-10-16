@@ -1,6 +1,5 @@
 require 'chef/knife'
 require 'knife-spork/runner'
-require 'knife-spork/utils'
 require 'set'
 require 'json'
 require 'chef/mixin/deep_merge'
