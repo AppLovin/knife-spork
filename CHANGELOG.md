@@ -1,3 +1,6 @@
+## 2.5.0(15th October, 2016)
+    - First clean release after forking
+
 ## 1.5.1(26th February, 2015)
 
 Bugfixes:
