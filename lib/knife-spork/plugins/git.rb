@@ -532,7 +532,7 @@ module KnifeSpork
 
       def branch
         if args[:attribute]
-          "attribute/#{args[:attribute].gsub(":", "_")}"
+          "attribute/#{args[:attribute].gsub(":", "_")}_#{Time.now.utc.strftime("%Y%b%d_%H%M%S")}"
         else
           args[:branch] || config.branch || 'master'
         end
