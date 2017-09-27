@@ -1,11 +1,11 @@
 $:.push File.expand_path('../lib', __FILE__)
 
 Gem::Specification.new do |gem|
-  gem.name          = 'x-knife-spork'
-  gem.version       = '2.5.2'
+  gem.name          = 'knife-spork'
+  gem.version       = '2.6.0'
   gem.authors       = ["Jeune Asuncion"]
-  gem.email         = 'jeunito@gmail.com'
-  gem.homepage      = 'https://github.com/jeunito/knife-spork-x'
+  gem.email         = 'jeune.asuncion@applovin.com'
+  gem.homepage      = 'https://github.com/jeunito/knife-spork'
   gem.licenses      = ['GPL']
   gem.summary       = "A workflow plugin to help many devs work with the same chef repo/server"
   gem.description   = "KnifeSpork is a workflow plugin for Chef::Knife which helps multiple developers work on the same Chef Server and repository without treading on each other's toes."
@@ -13,7 +13,7 @@ Gem::Specification.new do |gem|
   gem.files         = `git ls-files`.split($\)
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
   gem.test_files    = gem.files.grep(%r{^(test|spec|features)/})
-  gem.name          = "knife-spork-x"
+  gem.name          = "knife-spork"
   gem.require_paths = ["lib"]
 
   
