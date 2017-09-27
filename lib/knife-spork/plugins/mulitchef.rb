@@ -17,6 +17,7 @@ module KnifeSpork
             ui.info "Uploading #{cookbook.name} at #{cookbook.version} to #{chef_server.url}"
             uploader.upload_cookbooks
             ui.info "Upload to #{chef_server.url} successful!"
+            slack "#{organization}#{current_user} uploaded the following cookbooks:\n#{cookbooks.collect{ |c| "  #{c.name}@#{c.version}" }.join("\n")} to mirror #{chef_server.url}"
           end
         end
       end
@@ -25,16 +26,31 @@ module KnifeSpork
         environments.each do |environment|
           chef_servers.each do |chef_server|
             environment.chef_server_rest = Chef::ServerAPI.new(chef_server.url)
-            ui.info "Uploading #{environment.name}.json to Chef Server"
+            ui.info "Uploading #{environment.name}.json to #{chef_server.url}"
             environment.save
             ui.info "Promotion complete at #{Time.now}!"
+            slack "#{organization}#{current_user} promoted the following cookbooks:\n#{cookbooks.collect{ |c| "  #{c.name}@#{c.version}" }.join("\n")} to #{environments.collect{ |e| "#{e.name}" }.join(", ")} to mirror #{chef_server.url}"
           end
         end
+
       end
 
       def chef_servers
         raise "No mirror Chef server(s) specified in multichef config" if config.servers.nil? or config.servers.length == 0
         @chef_servers ||= config.servers.map { |uri| Chef::ServerAPI.new(uri) }
+      end
+
+      def slack(message)
+        safe_require 'slack-notifier'
+        slack_config = @options[:config].plugins.slack
+        ui.error "No Slack Config" if slack_config.nil?
+        @slack ||= begin
+          notifier = ::Slack::Notifier.new( slack_config.webhook_url, channel: slack_config.channel, username: slack_config.username, icon_url: slack_config.icon_url)
+          notifier.ping message
+        rescue Exception => e
+          ui.error 'Something went wrong sending to Slack.'
+          ui.error e.to_s
+        end
       end
     end
   end
