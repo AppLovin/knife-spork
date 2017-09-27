@@ -2,9 +2,9 @@ $:.push File.expand_path('../lib', __FILE__)
 
 Gem::Specification.new do |gem|
   gem.name          = 'knife-spork'
-  gem.version       = '2.5.2'
+  gem.version       = '2.6.0'
   gem.authors       = ["Jeune Asuncion"]
-  gem.email         = 'jeunito@gmail.com'
+  gem.email         = 'jeune.asuncion@applovin.com'
   gem.homepage      = 'https://github.com/jeunito/knife-spork'
   gem.licenses      = ['GPL']
   gem.summary       = "A workflow plugin to help many devs work with the same chef repo/server"
