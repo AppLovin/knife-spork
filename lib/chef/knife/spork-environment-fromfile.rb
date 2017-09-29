@@ -37,6 +37,7 @@ module KnifeSpork
         environment_from_file
         post_environment = load_environment(@object_name.gsub(".json","").gsub(".rb",""))
         @object_difference = json_diff(pre_environment,post_environment).to_s
+        @environments = [ post_environment ]
         @args = { :git_message => config[:message] } 
         run_plugins(:after_environmentfromfile)
       end
