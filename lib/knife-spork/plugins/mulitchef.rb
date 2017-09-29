@@ -32,7 +32,18 @@ module KnifeSpork
             slack "#{organization}#{current_user} promoted the following cookbooks:\n#{cookbooks.collect{ |c| "  #{c.name}@#{c.version}" }.join("\n")} to #{environments.collect{ |e| "#{e.name}" }.join(", ")} to mirror #{chef_server.url}"
           end
         end
+      end
 
+      def after_environmentfromfile
+        environments.each do |environment|
+          chef_servers.each do |chef_server|
+            environment.chef_server_rest = Chef::ServerAPI.new(chef_server.url)
+            ui.info "Uploading #{environment.name}.json to #{chef_server.url}"
+            environment.save
+            ui.info "Promotion complete at #{Time.now}!"
+            slack "#{organization}#{current_user} promoted the following cookbooks:\n#{cookbooks.collect{ |c| "  #{c.name}@#{c.version}" }.join("\n")} to #{environments.collect{ |e| "#{e.name}" }.join(", ")} to mirror #{chef_server.url}"
+          end
+        end
       end
 
       def chef_servers
