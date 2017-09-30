@@ -1,4 +1,31 @@
+## 2.7.0(27th September, 2017)
+
+Features:
+
+    - Add slack messaging for multichef plugin
+
+## 2.6.0(27th September, 2017)
+
+Features:
+
+    - Initial commit for multichef plugin
+
+## 2.5.2(21st February, 2017)
+
+Refactoring:
+
+    - Reimplemented creating a branch name
+
+## 2.5.1(8th February, 2017)
+
+Features:
+
+    - Add time to branch name in git plugin
+
 ## 2.5.0(15th October, 2016)
+
+Fork:
+
     - First clean release after forking
 
 ## 1.5.1(26th February, 2015)
