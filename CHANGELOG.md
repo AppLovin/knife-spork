@@ -1,3 +1,9 @@
+## 2.8.0(29th September, 2017)
+
+Features:
+
+    - Add multichef hook for spork environment from file
+
 ## 2.7.0(27th September, 2017)
 
 Features:
