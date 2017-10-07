@@ -133,13 +133,14 @@ module KnifeSpork
       def before_nodeedit
         if ! auto_push_disabled? __method__
           git_pull(node_path)
-          if !File.exist?(File.join(node_path, object_name + '.json'))
+          if !File.exist?(File.join(node_path, object_name + '.json')) && config.load_nodes_from_fs
             ui.error 'Node does not exist in git, please bootstrap one first'
             exit 1
           end
         end
       end
       def after_nodeedit
+        return if !load_nodes_from_git?
         if ! auto_push_disabled? __method__
           save_node(object_name) unless object_difference == ''
         end
@@ -551,6 +552,10 @@ module KnifeSpork
         else
           cookbook.root_dir
         end
+      end
+
+      def load_nodes_from_git?
+        config.load_nodes_from_git
       end
     end
   end
