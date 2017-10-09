@@ -6,7 +6,6 @@ Gem::Specification.new do |gem|
   gem.authors       = ["Jeune Asuncion"]
   gem.email         = 'jeune.asuncion@applovin.com'
   gem.homepage      = 'https://github.com/jeunito/knife-spork'
-  gem.licenses      = ['GPL']
   gem.summary       = "A workflow plugin to help many devs work with the same chef repo/server"
   gem.description   = "KnifeSpork is a workflow plugin for Chef::Knife which helps multiple developers work on the same Chef Server and repository without treading on each other's toes."
 
