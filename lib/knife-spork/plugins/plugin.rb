@@ -59,6 +59,10 @@ module KnifeSpork
         @options[:environments]
       end
 
+      def nodes
+        @options[:nodes]
+      end
+
       def environment_diffs
         @options[:environment_diffs]
       end

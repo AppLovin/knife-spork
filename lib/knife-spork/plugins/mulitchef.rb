@@ -46,6 +46,17 @@ module KnifeSpork
         end
       end
 
+      def after_nodeedit
+        nodes.each do |node|
+          chef_servers.each do |chef_server|
+            node.chef_server_rest = Chef::ServerAPI.new(chef_server.url)
+            node.save
+            ui.info "Updated node #{node.name} to #{chef_server.url}"
+            slack "Updated node #{node.name} to #{chef_server.url}"
+          end
+        end
+      end
+
       def chef_servers
         raise "No mirror Chef server(s) specified in multichef config" if config.servers.nil? or config.servers.length == 0
         @chef_servers ||= config.servers.map { |uri| Chef::ServerAPI.new(uri) }

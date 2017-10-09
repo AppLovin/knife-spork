@@ -28,10 +28,12 @@ module KnifeSpork
 
       @object_name = @name_args.first
 
+
       run_plugins(:before_nodeedit)
       pre_node = load_node(@object_name)
       node_edit
       post_node = load_node(@object_name)
+      @node = post_node
       @object_difference = json_diff(pre_node,post_node).to_s
       run_plugins(:after_nodeedit)
     end
