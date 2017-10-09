@@ -4,6 +4,18 @@ X Knife Spork is a tool for manipulating infrastructure managed by chef.
 
 This is a modified version of the original [knife-spork project](https://github.com/jonlives/knife-spork) by [@jonlives](https://github.com/jonlives) at Etsy.
 
+Installation
+------------
+```bundle install```
+
+OR
+
+```bash
+git clone git@github.com:AppLovin/knife-spork.git
+gem build knife-spork.gemspec
+gem install knife-spork-2.9.0.gem
+```
+
 Usage
 ------------
 ### Change attributes in multiple environments 
