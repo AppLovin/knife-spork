@@ -1,3 +1,10 @@
+## 2.9.0(9th October, 2017)
+
+Features:
+
+    - Add multichef hook for spork node edit
+
+
 ## 2.8.0(29th September, 2017)
 
 Features:
