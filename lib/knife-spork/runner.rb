@@ -41,12 +41,15 @@ module KnifeSpork
 
         nodes = [ @node ]
 
+        roles = [ @role ]
+
         KnifeSpork::Plugins.run(
           :config => spork_config,
           :hook => hook.to_sym,
           :cookbooks => cookbooks,
           :environments => environments,
           :nodes => nodes,
+          :roles => roles,
           :environment_diffs => environment_diffs,
           :environment_path => environment_path,
           :role_path => role_path,

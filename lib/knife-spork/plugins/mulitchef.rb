@@ -57,6 +57,17 @@ module KnifeSpork
         end
       end
 
+      def after_rolefromfile
+        roles.each do |role|
+          chef_servers.each do |chef_server|
+            role.chef_server_rest = Chef::ServerAPI.new(chef_server.url)
+            role.save
+            ui.info "Updated role #{role.name} to #{chef_server.url}"
+            slack "Updated role #{role.name} to #{chef_server.url}"
+          end
+        end
+      end
+
       def chef_servers
         raise "No mirror Chef server(s) specified in multichef config" if config.servers.nil? or config.servers.length == 0
         @chef_servers ||= config.servers.map { |uri| Chef::ServerAPI.new(uri) }

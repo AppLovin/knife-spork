@@ -43,6 +43,7 @@ module KnifeSpork
           end
           role_from_file
           post_role = load_role(@object_name.gsub(".json","").gsub(".rb",""))
+          @role = post_role
           @object_difference = json_diff(pre_role,post_role).to_s
           @args = { :git_message => config[:message] } 
           run_plugins(:after_rolefromfile)

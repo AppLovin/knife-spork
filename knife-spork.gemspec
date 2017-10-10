@@ -2,7 +2,7 @@ $:.push File.expand_path('../lib', __FILE__)
 
 Gem::Specification.new do |gem|
   gem.name          = 'knife-spork'
-  gem.version       = '2.9.0'
+  gem.version       = '2.10.0'
   gem.authors       = ["Jeune Asuncion"]
   gem.email         = 'jeune.asuncion@applovin.com'
   gem.homepage      = 'https://github.com/jeunito/knife-spork'

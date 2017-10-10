@@ -1,3 +1,9 @@
+## 2.10.0(10th October, 2017)
+
+Features:
+
+    - Add multichef hook for spork role from file
+
 ## 2.9.0(9th October, 2017)
 
 Features:
