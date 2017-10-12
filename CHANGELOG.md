@@ -1,3 +1,10 @@
+## 2.10.1(10th October, 2017)
+
+Bugfixes:
+
+    - Fixed slack messaging in multichef after_environmentfromfile
+
+
 ## 2.10.0(10th October, 2017)
 
 Features:
