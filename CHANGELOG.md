@@ -1,3 +1,9 @@
+## 2.10.3(25th October, 2017)
+
+Bugfixes:
+
+    - Modify attributes in default section instead in `environment attribute set` subcommand
+
 ## 2.10.2(25th October, 2017)
 
 Bugfixes:
