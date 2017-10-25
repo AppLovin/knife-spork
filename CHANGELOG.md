@@ -1,3 +1,10 @@
+## 2.10.2(25th October, 2017)
+
+Bugfixes:
+
+    - Used different config attribute to get disabled git hooks for auto push
+
+
 ## 2.10.1(10th October, 2017)
 
 Bugfixes:

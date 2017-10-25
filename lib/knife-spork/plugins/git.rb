@@ -13,7 +13,7 @@ module KnifeSpork
 
       def auto_push_disabled?(method)
         begin
-          config.auto_push.disabled.include? method.to_s
+          config.autopush.disabled.include? method.to_s
         rescue NoMethodError
           begin
             config.auto_push == false
