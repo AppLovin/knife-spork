@@ -2,7 +2,7 @@ $:.push File.expand_path('../lib', __FILE__)
 
 Gem::Specification.new do |gem|
   gem.name          = 'knife-spork'
-  gem.version       = '2.10.3'
+  gem.version       = '2.10.4'
   gem.authors       = ["Jeune Asuncion"]
   gem.email         = 'jeune.asuncion@applovin.com'
   gem.homepage      = 'https://github.com/jeunito/knife-spork'
@@ -17,11 +17,11 @@ Gem::Specification.new do |gem|
 
   
   gem.add_development_dependency 'rspec', '~> 3.1'
-  gem.add_development_dependency 'chef-zero', '~> 3.2'
-  gem.add_development_dependency 'rack', '~> 1.6' #TODO find a way to not have to deal with this
+  gem.add_development_dependency 'chef-zero', '>= 3.2'
+  gem.add_development_dependency 'rack' #TODO find a way to not have to deal with this
 
   gem.add_runtime_dependency 'octokit', '~> 4.0'
-  gem.add_runtime_dependency 'chef', '~> 12.0'
+  gem.add_runtime_dependency 'chef', '~> 13.6.4'
   gem.add_runtime_dependency 'git', '~> 1.2'
   gem.add_runtime_dependency 'app_conf', '= 0.4.0'
   gem.add_runtime_dependency 'diffy', '~> 3.0'
